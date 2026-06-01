@@ -1,0 +1,134 @@
+{
+  "scene": {
+    "environment": [
+      "standard_bathroom.glb",
+      "elite_walls.glb",
+      "elite_floor.glb",
+      "elite_baseboard.glb",
+      "vanity.glb",
+      "toilet.glb",
+      "SHOWER-DRAIN.glb",
+      "SHOWER-VALVE.glb"
+    ],
+    "panels": {
+      "center": "SHOWER-SURROUND-CENTER-ELITE.glb",
+      "sides": "SHOWER-SURROUND-SIDES-ELITE.glb"
+    }
+  },
+  "defaults": {
+    "base": "shower",
+    "wallColor": "white",
+    "wallPattern": "none",
+    "trim": "chrome",
+    "enclosure": "curtain-rod",
+    "seat": "none",
+    "shelf": "none"
+  },
+  "categories": {
+    "base": {
+      "label": "Base",
+      "options": [
+        {
+          "id": "shower",
+          "label": "Shower",
+          "thumbnail": "/textures/Shower Base.png",
+          "model": "/models/SHOWER-STANDARD.glb",
+          "price": null
+        },
+        {
+          "id": "tub",
+          "label": "Tub Conversion",
+          "thumbnail": "/textures/Classic.png",
+          "model": "/models/TUB-CLASSIC.glb",
+          "price": null
+        }
+      ]
+    },
+    "wallColor": {
+      "label": "Walls",
+      "options": [
+        { "id": "white",          "label": "White",          "thumbnail": "/textures/White.png",                "texture": "/textures/White.png",                "price": null },
+        { "id": "almond",         "label": "Almond",         "thumbnail": "/textures/Almond.png",               "texture": "/textures/Almond.png",               "price": null },
+        { "id": "biscuit",        "label": "Biscuit",        "thumbnail": "/textures/Biscuit.png",              "texture": "/textures/Biscuit.png",              "price": null },
+        { "id": "linen",          "label": "Linen",          "thumbnail": "/textures/Linen.png",                "texture": "/textures/Linen.png",                "price": null },
+        { "id": "gray",           "label": "Gray",           "thumbnail": "/textures/Gray.png",                 "texture": "/textures/Gray.png",                 "price": null },
+        { "id": "grayline",       "label": "Grayline",       "thumbnail": "/textures/Grayline.png",             "texture": "/textures/Grayline.png",             "price": null },
+        { "id": "sandbar",        "label": "Sandbar",        "thumbnail": "/textures/Sandbar.png",              "texture": "/textures/Sandbar.png",              "price": null },
+        { "id": "london-fog",     "label": "London Fog",     "thumbnail": "/textures/London Fog.png",           "texture": "/textures/London Fog.png",           "price": null },
+        { "id": "othello",        "label": "Othello",        "thumbnail": "/textures/Othello.png",              "texture": "/textures/Othello.png",              "price": null },
+        { "id": "horizon-beige",  "label": "Horizon Beige",  "thumbnail": "/textures/Horizon Beige.png",        "texture": "/textures/Horizon Beige.png",        "price": null },
+        { "id": "metapeake",      "label": "Metapeake",      "thumbnail": "/textures/Metapeake.png",            "texture": "/textures/Metapeake.png",            "price": null },
+        { "id": "durango",        "label": "Durango",        "thumbnail": "/textures/Durango.png",              "texture": "/textures/Durango.png",              "price": null },
+        { "id": "arctic-ice",     "label": "Arctic Ice",     "thumbnail": "/textures/Arctic Ice_thumb.png",     "texture": "/textures/Arctic Ice_thumb.png",     "price": null },
+        { "id": "glacier-ice",    "label": "Glacier Ice",    "thumbnail": "/textures/Glacier Ice_thumb.png",    "texture": "/textures/Glacier Ice_thumb.png",    "price": null },
+        { "id": "versailles",     "label": "Versailles",     "thumbnail": "/textures/Versailles_thumb.png",     "texture": "/textures/Versailles_thumb.png",     "price": null },
+        { "id": "sandalwood",     "label": "Sandalwood",     "thumbnail": "/textures/Sandalwood_thumb.png",     "texture": "/textures/Sandalwood_thumb.png",     "price": null },
+        { "id": "calcutta-marble","label": "Calcutta Marble","thumbnail": "/textures/Calcutta Marble.png",      "texture": "/textures/Calcutta Marble.png",      "price": null },
+        { "id": "travertine",     "label": "Travertine",     "thumbnail": "/textures/Travertine.png",           "texture": "/textures/Travertine.png",           "price": null },
+        { "id": "brecchia",       "label": "Brecchia",       "thumbnail": "/textures/Brecchia.png",             "texture": "/textures/Brecchia.png",             "price": null },
+        { "id": "madeira-granite","label": "Madeira Granite","thumbnail": "/textures/Madeira Granite.png",      "texture": "/textures/Madeira Granite.png",      "price": null },
+        { "id": "pompeii-marble", "label": "Pompeii Marble", "thumbnail": "/textures/Pompeii Marble.png",       "texture": "/textures/Pompeii Marble.png",       "price": null },
+        { "id": "brazilnut",      "label": "Brazilnut",      "thumbnail": "/textures/elite-brazilnut.jpg",      "texture": "/textures/elite-brazilnut.jpg",      "price": null },
+        { "id": "dusky",          "label": "Dusky",          "thumbnail": "/textures/elite-dusky.jpg",          "texture": "/textures/elite-dusky.jpg",          "price": null },
+        { "id": "elite-grey",     "label": "Elite Grey",     "thumbnail": "/textures/elite-grey.jpg",           "texture": "/textures/elite-grey.jpg",           "price": null },
+        { "id": "kindling",       "label": "Kindling",       "thumbnail": "/textures/elite-kindling.jpg",       "texture": "/textures/elite-kindling.jpg",       "price": null },
+        { "id": "lyric-blue",     "label": "Lyric Blue",     "thumbnail": "/textures/elite-lyricblue.jpg",      "texture": "/textures/elite-lyricblue.jpg",      "price": null },
+        { "id": "trail-beige",    "label": "Trail Beige",    "thumbnail": "/textures/elite-trailbeige.jpg",     "texture": "/textures/elite-trailbeige.jpg",     "price": null },
+        { "id": "xanadu",         "label": "Xanadu",         "thumbnail": "/textures/elite-xanadu.jpg",         "texture": "/textures/elite-xanadu.jpg",         "price": null }
+      ]
+    },
+    "wallPattern": {
+      "label": "Pattern",
+      "options": [
+        { "id": "none",        "label": "None (Smooth)",  "thumbnail": "/textures/Smooth.png",                      "overlay": null,                                          "price": null },
+        { "id": "bayview",     "label": "Bayview",        "thumbnail": "/textures/Laser-Etched Bayview.png",        "overlay": "/textures/Laser-Etched Bayview.png",          "price": null },
+        { "id": "cobblestone", "label": "Cobblestone",    "thumbnail": "/textures/Laser-Etched Cobblestone.png",    "overlay": "/textures/Laser-Etched Cobblestone.png",      "price": null },
+        { "id": "flagstone",   "label": "Flagstone",      "thumbnail": "/textures/Laser-Etched Flagstone.png",      "overlay": "/textures/Laser-Etched Flagstone.png",        "price": null },
+        { "id": "herringbone", "label": "Herringbone",    "thumbnail": "/textures/Laser-Etched Herringbone.png",    "overlay": "/textures/Laser-Etched Herringbone.png",      "price": null },
+        { "id": "hexagonal",   "label": "Hexagonal",      "thumbnail": "/textures/Laser-Etched Hexagonal.png",      "overlay": "/textures/Laser-Etched Hexagonal.png",        "price": null },
+        { "id": "hopscotch",   "label": "Hopscotch",      "thumbnail": "/textures/Laser-Etched Hopscotch.png",      "overlay": "/textures/Laser-Etched Hopscotch.png",        "price": null },
+        { "id": "monument",    "label": "Monument",       "thumbnail": "/textures/Laser-Etched Monument.png",       "overlay": "/textures/Laser-Etched Monument.png",         "price": null },
+        { "id": "panorama",    "label": "Panorama",       "thumbnail": "/textures/Laser-Etched Panorama.png",       "overlay": "/textures/Laser-Etched Panorama.png",         "price": null },
+        { "id": "roman-block", "label": "Roman Block",    "thumbnail": "/textures/Laser-Etched Roman Block.png",    "overlay": "/textures/Laser-Etched Roman Block.png",      "price": null },
+        { "id": "subway",      "label": "Subway",         "thumbnail": "/textures/Laser-Etched Subway.png",         "overlay": "/textures/Laser-Etched Subway.png",           "price": null }
+      ]
+    },
+    "trim": {
+      "label": "Trim",
+      "options": [
+        { "id": "chrome",           "label": "Chrome",           "thumbnail": "/textures/Chrome.png",         "finish": "chrome",           "price": null },
+        { "id": "brushed-nickel",   "label": "Brushed Nickel",   "thumbnail": "/textures/Brushed Nickel.png", "finish": "brushed-nickel",   "price": null },
+        { "id": "matte-black",      "label": "Matte Black",      "thumbnail": "/textures/Matte Black.png",    "finish": "matte-black",      "price": null },
+        { "id": "brushed-gold",     "label": "Brushed Gold",     "thumbnail": "/textures/Brushed Gold.png",   "finish": "brushed-gold",     "price": null },
+        { "id": "oil-rubbed-bronze","label": "Oil Rubbed Bronze","thumbnail": "/textures/Oil Rubbed Bronze.png","finish": "oil-rubbed-bronze","price": null },
+        { "id": "stainless",        "label": "Stainless",        "thumbnail": "/textures/Stainless.png",      "finish": "stainless",        "price": null }
+      ]
+    },
+    "enclosure": {
+      "label": "Enclosure",
+      "note": "Options shown depend on base type. Shower: curtain rod or glass door. Tub: tub enclosure or none.",
+      "options": [
+        { "id": "none",        "label": "None",         "thumbnail": "/textures/empty-selection.jpg",   "model": null,                          "price": null },
+        { "id": "curtain-rod", "label": "Curtain Rod",  "thumbnail": "/textures/Curtain Rod.png",       "model": "/models/SHOWER-ROD-CURVED.glb","price": null },
+        { "id": "glass-door",  "label": "Glass Door",   "thumbnail": "/textures/Frosted Glass Thumb.png","model": "/models/SHOWER-DOOR-STD.glb", "price": null }
+      ]
+    },
+    "seat": {
+      "label": "Seat",
+      "options": [
+        { "id": "none",             "label": "None",            "thumbnail": "/textures/empty-selection.jpg",    "model": null,                              "price": null },
+        { "id": "bench",            "label": "Bench Seat",      "thumbnail": "/textures/Bench Seat.png",         "model": "/models/BENCH-SHOWER-SEAT.glb",   "price": null },
+        { "id": "fold-down",        "label": "Fold Down",       "thumbnail": "/textures/Fold Down Seat.png",     "model": "/models/MOEN_BENCH_2.glb",        "price": null },
+        { "id": "corner",           "label": "Corner Seat",     "thumbnail": "/textures/Hexagonal Corner Seat.png","model": "/models/HEXAGONAL-CORNER-SEAT.glb","price": null }
+      ]
+    },
+    "shelf": {
+      "label": "Shelf",
+      "options": [
+        { "id": "none",         "label": "None",          "thumbnail": "/textures/empty-selection.jpg", "model": null,                                  "price": null },
+        { "id": "corner-shelf", "label": "Corner Shelf",  "thumbnail": "/textures/Corner Shelf.png",   "model": "/models/METAL-CORNER-SHELF_both.glb", "price": null },
+        { "id": "niche-shelf",  "label": "Niche Shelf",   "thumbnail": "/textures/Niche Shelf.png",    "model": "/models/NICHE-SHELF.glb",             "price": null }
+      ]
+    }
+  }
+}
