@@ -93,6 +93,22 @@ Materials defined in `TRIM_PROPS` constant. Applied via `TrimColoredModel` compo
 ## Vanity / Flooring / Toilet Tabs
 Hidden in `SelectionPanel.jsx` via `.filter(tab => tab.enabled)`. To re-enable a tab when it's built, change `enabled: false` to `enabled: true` in the `MAIN_TABS` array.
 
+## Wall Pattern Etching — WIP ⚠️
+Approach: white alpha overlay mesh (`MeshBasicMaterial` + `alphaMap` + `alphaTest: 0.5`) rendered on top of the wall color. Two separate materials for center vs sides to give independent UV control (sides offset by 0.5).
+
+**What's working:** bayview, chevron, flagstone, herringbone, hopscotch, panorama, roman block (7 of 12 have alpha files)
+
+**Still needs fixing:**
+- Pattern scale/repeat tuning — needs more testing per-pattern
+- Seam between back wall and side walls still not perfect — panels share continuous UV so offset hack is imperfect
+- On light wall colors, white lines are visible but should be subtle (same-color groove effect like BCI)
+- Missing alpha files: monument, oblong, scalloped, subway, hexagon (have `_normal.basis` but wrong format for this approach)
+- Cobblestone missing entirely
+
+**Key insight from BCI comparison:** BCI renders etching as a same-color groove/relief (normal map) on light panels, and shows white lines on dark panels. Our white overlay is always visible regardless of wall color — this is the fundamental approach difference to revisit.
+
+**Files:** All etch textures in `public/textures/etch_*`. `_alpha.basis` / `_alpha.png` = overlay files. `_normal.basis` = normal maps (downloaded but not currently used).
+
 ## Glass Door
 - `SH-STD-GLASS.glb` = glass panel (same mesh for clear and rain)
 - `SHOWER-DOOR-STD.glb` = door frame (trim-colored)
