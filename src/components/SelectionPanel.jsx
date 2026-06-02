@@ -21,12 +21,40 @@ const SUB_TABS = [
 
 export function SelectionPanel({ selections, onUpdate }) {
   const [activeTab, setActiveTab] = useState('walls')
+  const [minimized, setMinimized] = useState(false)
   const subScrollRef = useRef(null)
 
   const currentSub = SUB_TABS.find(t => t.key === activeTab)
   const category   = manifest.categories[currentSub?.catKey]
   const options    = category?.options ?? []
   const currentVal = selections[activeTab] ?? manifest.defaults[activeTab]
+
+  if (minimized) {
+    return (
+      <div style={{
+        position: 'fixed',
+        bottom: 24,
+        right: 24,
+        width: 360,
+        height: 48,
+        background: '#ffffff',
+        borderRadius: 14,
+        boxShadow: '0 8px 48px rgba(0,0,0,0.18), 0 2px 12px rgba(0,0,0,0.08)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 16px',
+        fontFamily: "'Inter', 'SF Pro Text', system-ui, sans-serif",
+        userSelect: 'none',
+        cursor: 'pointer',
+      }} onClick={() => setMinimized(false)}>
+        <span style={{ fontSize: '13px', fontWeight: 600, color: '#111', letterSpacing: '-0.01em' }}>
+          Design Options
+        </span>
+        <span style={{ fontSize: '18px', color: '#999', lineHeight: 1 }}>⌃</span>
+      </div>
+    )
+  }
 
   return (
     <div style={{
@@ -50,6 +78,7 @@ export function SelectionPanel({ selections, onUpdate }) {
         display: 'flex',
         borderBottom: '1px solid #f0f0f0',
         background: '#fff',
+        alignItems: 'stretch',
       }}>
         {MAIN_TABS.map(tab => (
           <button
@@ -72,6 +101,23 @@ export function SelectionPanel({ selections, onUpdate }) {
             {tab.label}
           </button>
         ))}
+        <button
+          onClick={() => setMinimized(true)}
+          title="Minimize"
+          style={{
+            width: 36,
+            border: 'none',
+            background: 'none',
+            color: '#bbb',
+            fontSize: '18px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+            paddingBottom: 4,
+          }}
+        >⌄</button>
       </div>
 
       {/* ── Browse Options label + sub-tabs ── */}
