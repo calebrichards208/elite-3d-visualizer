@@ -359,8 +359,9 @@ function CameraRig({ recenterKey, showerCenter }) {
   useEffect(() => {
     if (!controlsRef.current) return
     const { x, y, z } = showerCenter
-    camera.position.set(x, y + 1.0, z + 4)
-    controlsRef.current.target.set(x, y + 0.3, z)
+    const mobile = window.innerWidth <= 768
+    camera.position.set(x, y + (mobile ? 0.4 : 1.0), z + 4)
+    controlsRef.current.target.set(x, y + (mobile ? -0.3 : 0.3), z)
     controlsRef.current.update()
     controlsRef.current.saveState()
   // eslint-disable-next-line react-hooks/exhaustive-deps

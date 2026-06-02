@@ -30,12 +30,11 @@ export function SelectionPanel({ selections, onUpdate }) {
   const currentVal = selections[activeTab] ?? manifest.defaults[activeTab]
 
   if (minimized) {
+    const mobile = window.innerWidth <= 768
     return (
       <div style={{
         position: 'fixed',
-        bottom: 24,
-        right: 24,
-        width: 360,
+        ...(mobile ? { top: 16, left: 16, right: 16, width: 'auto' } : { bottom: 24, right: 24, width: 360 }),
         height: 48,
         background: '#ffffff',
         borderRadius: 14,
@@ -51,7 +50,7 @@ export function SelectionPanel({ selections, onUpdate }) {
         <span style={{ fontSize: '13px', fontWeight: 600, color: '#111', letterSpacing: '-0.01em' }}>
           Design Options
         </span>
-        <span style={{ fontSize: '18px', color: '#999', lineHeight: 1 }}>⌃</span>
+        <span style={{ fontSize: '18px', color: '#999', lineHeight: 1 }}>{mobile ? '⌄' : '⌃'}</span>
       </div>
     )
   }
