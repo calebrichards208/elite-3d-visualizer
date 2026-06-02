@@ -57,8 +57,8 @@ const SEAT_POS          = [-1.683, 0.000,  1.344]
 const FOLD_DOWN_POS     = [-2.633, 0.400, -0.256]
 const GRAB_BAR_VERT_POS   = [-2.233, -0.050, 1.544]
 const GRAB_BAR_VERT_EULER = [0.50 * Math.PI, 0.33 * Math.PI, -0.50 * Math.PI]
-const GRAB_BAR_DIAG_POS   = [-0.433, 0.950, 1.194]
-const GRAB_BAR_DIAG_EULER = [0.50 * Math.PI, 0.00 * Math.PI, 1.00 * Math.PI]
+const GRAB_BAR_DIAG_POS   = [-0.433, 1.100, 1.194]
+const GRAB_BAR_DIAG_EULER = [0.50 * Math.PI, 0.00 * Math.PI, -1.00 * Math.PI]
 
 // ─── Models to load ───────────────────────────────────────────────────────────
 
