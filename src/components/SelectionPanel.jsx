@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import manifest from '../data/products-manifest.json'
 
 const MAIN_TABS = [
@@ -23,8 +23,15 @@ export function SelectionPanel({ selections, onUpdate }) {
   const [activeTab, setActiveTab] = useState('walls')
   const [minimized, setMinimized] = useState(false)
   const subScrollRef = useRef(null)
+  const activeTabRef = useRef(null)
 
   const mobile = window.innerWidth <= 768
+
+  useEffect(() => {
+    if (!minimized && activeTabRef.current) {
+      activeTabRef.current.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' })
+    }
+  }, [minimized])
 
   const currentSub = SUB_TABS.find(t => t.key === activeTab)
   const category   = manifest.categories[currentSub?.catKey]
@@ -146,6 +153,7 @@ export function SelectionPanel({ selections, onUpdate }) {
             return (
               <button
                 key={tab.key}
+                ref={active ? activeTabRef : null}
                 onClick={() => setActiveTab(tab.key)}
                 style={{
                   flexShrink: 0,
