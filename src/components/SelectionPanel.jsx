@@ -121,7 +121,7 @@ export function SelectionPanel({ selections, onUpdate }) {
           gap: 4,
           flexShrink: 0,
         }}>
-          {MAIN_TABS.map(tab => {
+          {MAIN_TABS.filter(tab => tab.enabled).map(tab => {
             const active = tab.enabled && activeTab !== null
             const isActive = tab.key === 'bath'
             return (
