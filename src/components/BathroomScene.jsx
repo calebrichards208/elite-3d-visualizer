@@ -49,9 +49,9 @@ const STD_DOOR_POS   = [-1.683, 0.000, 1.394]
 const STD_GLASS_POS  = [-2.033, 1.200, -0.006]
 const DENALI_DOOR_POS = [-1.983, 1.250, -0.006]
 const VALVE_POS         = [-1.883, 0.000, 1.444]
-const STANDARD_HEAD_POS = [-1.883, 0.000, 1.344]
-const RAIN_HEAD_POS     = [-1.833, 0.100, 1.444]
-const HANDHELD_POS      = [-1.833, 0.250, 1.244]
+const STANDARD_HEAD_POS = [-1.933, 0.000, 1.344]
+const RAIN_HEAD_POS     = [-1.933, 0.100, 1.444]
+const HANDHELD_POS      = [-1.933, 0.250, 1.244]
 const TUB_HEAD_POS      = [-1.883, 0.000, 1.444]
 const SEAT_POS          = [-1.683, 0.000,  1.344]
 const FOLD_DOWN_POS     = [-2.633, 0.400, -0.256]
@@ -97,13 +97,74 @@ PRELOAD_URLS.forEach(url => useGLTF.preload(url))
 
 function EnvModel({ url, visible = true }) {
   const { scene } = useGLTF(url)
+  const { gl } = useThree()
+  const cloned = useMemo(() => scene.clone(true), [scene])
+
   useEffect(() => {
     try {
       window.__envScenes = window.__envScenes || {}
-      window.__envScenes[url] = scene
+      window.__envScenes[url] = cloned
     } catch (e) {}
-  }, [scene, url])
-  return <primitive object={scene} visible={visible} />
+
+    // Apply materials to specific environment models
+    if (url === '/models/elite_floor.glb') {
+      cloned.traverse(child => {
+        if (child.isMesh) {
+          const mat = new THREE.MeshStandardMaterial({
+            color: '#ffffff',
+            roughness: 0.75,
+            metalness: 0,
+          })
+
+          const textureLoader = new THREE.TextureLoader()
+          const maxAniso = gl.capabilities.getMaxAnisotropy()
+
+          // Load diffuse map
+          textureLoader.load('/textures/laminate_floor/laminate_floor_02_diff_2k.jpg', tex => {
+            tex.colorSpace = THREE.SRGBColorSpace
+            tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+            tex.repeat.set(2, 2)
+            tex.anisotropy = maxAniso
+            mat.map = tex
+            mat.needsUpdate = true
+          })
+
+          // Load normal map
+          textureLoader.load('/textures/laminate_floor/laminate_floor_02_nor_gl_2k.png', tex => {
+            tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+            tex.repeat.set(2, 2)
+            tex.anisotropy = maxAniso
+            mat.normalMap = tex
+            mat.normalScale.set(1, 1)
+            mat.needsUpdate = true
+          })
+
+          // Load roughness map
+          textureLoader.load('/textures/laminate_floor/laminate_floor_02_rough_2k.png', tex => {
+            tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+            tex.repeat.set(2, 2)
+            tex.anisotropy = maxAniso
+            mat.roughnessMap = tex
+            mat.needsUpdate = true
+          })
+
+          child.material = mat
+        }
+      })
+    } else if (url === '/models/elite_walls.glb') {
+      cloned.traverse(child => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            color: '#d9cfc1',
+            roughness: 0.85,
+            metalness: 0,
+          })
+        }
+      })
+    }
+  }, [cloned, gl, url])
+
+  return <primitive object={cloned} visible={visible} />
 }
 
 // ─── Wall panels ─────────────────────────────────────────────────────────────
@@ -298,8 +359,8 @@ function CameraRig({ recenterKey, showerCenter }) {
   useEffect(() => {
     if (!controlsRef.current) return
     const { x, y, z } = showerCenter
-    camera.position.set(x, y + 1.5, z + 4)
-    controlsRef.current.target.set(x, y + 0.8, z)
+    camera.position.set(x, y + 1.0, z + 4)
+    controlsRef.current.target.set(x, y + 0.3, z)
     controlsRef.current.update()
     controlsRef.current.saveState()
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -659,7 +720,12 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.1,
         }}
-        style={{ width: '100%', height: '100%', background: 'var(--bg-scene)' }}
+        style={{
+          width: '100%',
+          height: '100%',
+          background: 'var(--bg-scene)',
+          backgroundImage: 'var(--grid-pattern)',
+        }}
       >
         <Suspense fallback={<LoadingOverlay />}>
           <SceneContent selections={selections} recenterKey={recenterKey} nudges={nudges} gbRots={gbRots} showRoomWalls={showRoomWalls} />

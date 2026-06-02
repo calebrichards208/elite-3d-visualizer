@@ -11,3 +11,10 @@ html, body, #root {
   height: 100%;
   overflow: hidden;
 }
+
+:root {
+  --bg-scene: linear-gradient(135deg, #1a2f4a 0%, #0f1e2e 100%);
+  --grid-pattern:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(72,144,176,0.08) 39px, rgba(72,144,176,0.08) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(72,144,176,0.08) 39px, rgba(72,144,176,0.08) 40px);
+}
