@@ -55,6 +55,7 @@ const HANDHELD_POS      = [-1.883, 0.250, 1.244]
 const TUB_HEAD_POS      = [-1.883, 0.000, 1.444]
 const SEAT_POS          = [-1.683, 0.000,  1.344]
 const FOLD_DOWN_POS     = [-2.633, 0.400, -0.256]
+const DRAIN_POS         = [-1.823, 0.000,  1.474]
 const GRAB_BAR_VERT_POS   = [-2.233, -0.050, 1.544]
 const GRAB_BAR_VERT_EULER = [0.50 * Math.PI, 0.33 * Math.PI, -0.50 * Math.PI]
 const GRAB_BAR_DIAG_POS   = [-0.433, 1.100, 1.194]
@@ -85,6 +86,7 @@ const PRELOAD_URLS = [
   '/models/SHOWER-ROD-CURVED.glb',
   '/models/SHOWER-DOOR-STD.glb',
   '/models/SH-STD-GLASS.glb',
+  '/models/SHOWER-DRAIN.glb',
   '/models/BENCH-SHOWER-SEAT.glb',
   '/models/MOEN_BENCH_2.glb',
   '/models/HEXAGONAL-CORNER-SEAT.glb',
@@ -459,6 +461,7 @@ const NUDGE_GROUPS = [
   { key: 'gbv',     label: 'GB Back'    },
   { key: 'gbd',     label: 'GB Entry'   },
   { key: 'stddoor', label: 'Std Door'   },
+  { key: 'drain',   label: 'Drain'      },
 ]
 
 function NudgeOverlay({ active, setActive, positions, rotations }) {
@@ -508,7 +511,7 @@ function NudgeOverlay({ active, setActive, positions, rotations }) {
             return <div style={{ color: '#80c8ff', fontSize: '12px' }}>rot [{[eu.x,eu.y,eu.z].map(v=>(v/Math.PI).toFixed(2)+'π').join(', ')}]</div>
           })()}
           <div style={{ color: 'rgba(255,255,255,0.35)', fontSize: '10px', marginTop: '4px' }}>
-            ◀▶=X · ▲▼=Z · W/S=Y · Enter=copy · Esc=deselect
+            ◀▶=X · ▲▼=Z · W/S=Y · Shift=fine · Enter=copy · Esc=deselect
             {isGrabBar && ' · Q/E=rotZ · R/F=rotX · T/G=rotY'}
           </div>
         </div>
@@ -542,6 +545,7 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
     gbd:       add3(GRAB_BAR_DIAG_POS, nudges.gbd),
     stddoor:   add3(STD_DOOR_POS,      nudges.stddoor),
     stdglass:  add3(STD_GLASS_POS,     nudges.stddoor),
+    drain:     add3(DRAIN_POS,         nudges.drain),
   }
   const rotations = gbRots
 
@@ -624,6 +628,10 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
       <group position={positions.base} rotation={[0, Math.PI / 2, 0]}>
         <BaseModel selection={selections.base} />
       </group>
+      <group position={positions.drain} rotation={[0, Math.PI / 2, 0]}>
+        <TrimColoredModel url="/models/SHOWER-DRAIN.glb" trimId={selections.trim}
+                          visible={selections.base !== 'tub'} />
+      </group>
 
       <CameraRig recenterKey={recenterKey} showerCenter={nicheCenter} />
     </>
@@ -660,7 +668,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
   const [showNudge, setShowNudge] = useState(false)
   const [nudges, setNudges] = useState({
     base:[0,0,0], valve:[0,0,0], acc:[0,0,0], seat:[0,0,0],
-    head:[0,0,0], gbv:[0,0,0], gbd:[0,0,0], stddoor:[0,0,0],
+    head:[0,0,0], gbv:[0,0,0], gbd:[0,0,0], stddoor:[0,0,0], drain:[0,0,0],
   })
   const eulerToQuat = (e) => {
     const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(...e))
@@ -681,16 +689,20 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
 
   useEffect(() => {
     const STEP = 0.05
+    const FINE = 0.01
     const ROT_STEP = Math.PI / 12
-    const KEY_SELECT = { '1':'base', '2':'valve', '3':'acc', '4':'seat', '5':'head', '6':'gbv', '7':'gbd' }
+    const shiftHeld = { current: false }
+    const KEY_SELECT = { '1':'base', '2':'valve', '3':'acc', '4':'seat', '5':'head', '6':'gbv', '7':'gbd', '8':'drain' }
     const onKey = (e) => {
+      if (e.key === 'Shift') { shiftHeld.current = true; return }
       if (KEY_SELECT[e.key]) { setActive(KEY_SELECT[e.key]); return }
       const grp = activeRef.current
       if (!grp) return
 
-      const dx = e.key==='ArrowLeft'  ? -STEP : e.key==='ArrowRight' ? STEP : 0
-      const dz = e.key==='ArrowUp'    ? -STEP : e.key==='ArrowDown'  ? STEP : 0
-      const dy = (e.key==='w'||e.key==='W') ? STEP : (e.key==='s'||e.key==='S') ? -STEP : 0
+      const step = shiftHeld.current ? FINE : STEP
+      const dx = e.key==='ArrowLeft'  ? -step : e.key==='ArrowRight' ? step : 0
+      const dz = e.key==='ArrowUp'    ? -step : e.key==='ArrowDown'  ? step : 0
+      const dy = (e.key==='w'||e.key==='W') ? step : (e.key==='s'||e.key==='S') ? -step : 0
       if (dx||dy||dz) {
         e.preventDefault()
         setNudges(prev => { const c=prev[grp]; return {...prev,[grp]:[c[0]+dx,c[1]+dy,c[2]+dz]} })
@@ -741,14 +753,17 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
           `GRAB_BAR_DIAG_EULER: ${toEulerStr(r.gbd)}`,
           `SHOWER_WET_POS:      ${fmt3(add3(SHOWER_WET_POS,     n.base))}`,
           `TUB_WET_POS:         ${fmt3(add3(TUB_WET_POS,        n.base))}`,
+          `DRAIN_POS:           ${fmt3(add3(DRAIN_POS,           n.drain))}`,
         ].join('\n')
         navigator.clipboard.writeText(lines).then(() => {
           console.log('Copied to clipboard:\n' + lines)
         })
       }
     }
+    const onKeyUp = (e) => { if (e.key === 'Shift') shiftHeld.current = false }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    window.addEventListener('keyup', onKeyUp)
+    return () => { window.removeEventListener('keydown', onKey); window.removeEventListener('keyup', onKeyUp) }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -762,6 +777,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
     gbd:     add3(GRAB_BAR_DIAG_POS, nudges.gbd),
     stddoor: add3(STD_DOOR_POS,      nudges.stddoor),
     stdglass: add3(STD_GLASS_POS,    nudges.stddoor),
+    drain:   add3(DRAIN_POS,         nudges.drain),
   }
 
   return (
