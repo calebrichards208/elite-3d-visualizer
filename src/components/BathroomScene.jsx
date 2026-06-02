@@ -385,16 +385,23 @@ function LeftSeatModel({ url, visible }) {
   return <primitive object={cloned} visible={visible} />
 }
 
-const WOOD_MAT = new THREE.MeshStandardMaterial({ color: '#8a6540', roughness: 0.72, metalness: 0.0 })
-
-// Fold-down GLB has no embedded materials — apply a default wood look.
+// Fold-down GLB has no embedded materials — apply teak basis texture.
 function FoldDownSeat({ visible }) {
   const { scene } = useGLTF('/models/MOEN_BENCH_2.glb')
-  const cloned = useMemo(() => {
-    const clone = scene.clone(true)
-    clone.traverse(child => { if (child.isMesh) child.material = WOOD_MAT })
-    return clone
-  }, [scene])
+  const { gl } = useThree()
+  const cloned = useMemo(() => scene.clone(true), [scene])
+
+  useEffect(() => {
+    const mat = new THREE.MeshStandardMaterial({ roughness: 0.65, metalness: 0.0 })
+    loadBasisTexture('/textures/MOEN_TEAK_BENCH_Silver_Teak.basis', gl).then(tex => {
+      tex.colorSpace = THREE.SRGBColorSpace
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+      mat.map = tex
+      mat.needsUpdate = true
+      cloned.traverse(child => { if (child.isMesh) { child.material = mat } })
+    })
+  }, [cloned, gl])
+
   return <primitive object={cloned} visible={visible} />
 }
 
