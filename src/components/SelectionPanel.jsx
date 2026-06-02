@@ -9,8 +9,9 @@ const MAIN_TABS = [
 ]
 
 const SUB_TABS = [
-  { key: 'walls',      label: 'Shower Walls', catKey: 'walls' },
-  { key: 'base',       label: 'Base Type',     catKey: 'base' },
+  { key: 'walls',       label: 'Shower Walls', catKey: 'walls' },
+  { key: 'wallPattern', label: 'Pattern',       catKey: 'wallPattern' },
+  { key: 'base',        label: 'Base Type',     catKey: 'base' },
   { key: 'trim',       label: 'Fixture Color', catKey: 'trim' },
   { key: 'showerHead', label: 'Shower Head',   catKey: 'showerHead' },
   { key: 'enclosure',  label: 'Enclosure',     catKey: 'enclosure' },

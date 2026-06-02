@@ -176,10 +176,21 @@ function WallPanels({ wallId, wallPatternId }) {
   const { scene: sidesGLB }  = useGLTF('/models/SHOWER-SURROUND-SIDES-ELITE.glb')
   const { gl }               = useThree()
 
-  const center = useMemo(() => centerGLB.clone(true), [centerGLB])
-  const sides  = useMemo(() => sidesGLB.clone(true), [sidesGLB])
-  const matRef = useRef(new THREE.MeshStandardMaterial({ roughness: 0.38, metalness: 0, side: THREE.DoubleSide }))
+  const center      = useMemo(() => centerGLB.clone(true), [centerGLB])
+  const sides       = useMemo(() => sidesGLB.clone(true), [sidesGLB])
+  const centerEtch  = useMemo(() => centerGLB.clone(true), [centerGLB])
+  const sidesEtch   = useMemo(() => sidesGLB.clone(true), [sidesGLB])
 
+  const matRef = useRef(new THREE.MeshStandardMaterial({ roughness: 0.38, metalness: 0, side: THREE.DoubleSide }))
+  const makeEtchMat = () => new THREE.MeshBasicMaterial({
+    color: '#ffffff', transparent: true, alphaTest: 0.5,
+    depthWrite: false, side: THREE.DoubleSide,
+    polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -4, opacity: 0,
+  })
+  const etchMatCenterRef = useRef(makeEtchMat())
+  const etchMatSidesRef  = useRef(makeEtchMat())
+
+  // ── Wall color ────────────────────────────────────────────────────────────
   useEffect(() => {
     const maxAniso = gl.capabilities.getMaxAnisotropy()
     const mat = matRef.current
@@ -187,13 +198,6 @@ function WallPanels({ wallId, wallPatternId }) {
 
     const colorOpt = manifest.categories.walls?.options.find(o => o.id === wallId)
       || manifest.categories.wallColor?.options.find(o => o.id === wallId)
-
-    let patternOpt = null
-    if (colorOpt?.basisAlpha || colorOpt?.basisNormal) {
-      patternOpt = { basisAlpha: colorOpt.basisAlpha, basisNormal: colorOpt.basisNormal }
-    } else {
-      patternOpt = manifest.categories.wallPattern?.options.find(o => o.id === wallPatternId)
-    }
 
     const applyMat = () => {
       if (cancelled) return
@@ -207,10 +211,7 @@ function WallPanels({ wallId, wallPatternId }) {
     }
 
     async function update() {
-      // Apply hex color immediately so walls never show black while texture loads
       mat.map = null
-      mat.normalMap = null
-      mat.normalScale.set(0, 0)
       mat.color.set(WALL_HEX[wallId] ?? '#ece9e4')
       mat.needsUpdate = true
       applyMat()
@@ -232,32 +233,66 @@ function WallPanels({ wallId, wallPatternId }) {
           console.warn('[WallPanels] color basis failed, using hex fallback:', e.message)
         }
       }
-
-      if (patternOpt?.basisNormal && (wallPatternId !== 'none' || colorOpt?.basisAlpha)) {
-        try {
-          const nTex = await loadBasisTexture(patternOpt.basisNormal, gl)
-          if (cancelled) return
-          nTex.wrapS = nTex.wrapT = THREE.RepeatWrapping
-          nTex.repeat.set(4, 4)
-          nTex.needsUpdate = true
-          mat.normalMap = nTex
-          mat.normalScale.set(1.4, 1.4)
-          mat.needsUpdate = true
-          applyMat()
-        } catch (e) {
-          console.warn('[WallPanels] normal basis failed:', e.message)
-        }
-      }
     }
 
     update()
     return () => { cancelled = true }
-  }, [wallId, wallPatternId, center, sides, gl])
+  }, [wallId, center, sides, gl])
+
+  // ── Etch overlay ──────────────────────────────────────────────────────────
+  useEffect(() => {
+    const matC = etchMatCenterRef.current
+    const matS = etchMatSidesRef.current
+    let cancelled = false
+
+    const clearEtch = () => {
+      matC.alphaMap = null; matC.opacity = 0; matC.needsUpdate = true
+      matS.alphaMap = null; matS.opacity = 0; matS.needsUpdate = true
+      centerEtch.traverse(c => { if (c.isMesh) c.material = matC })
+      sidesEtch.traverse(c  => { if (c.isMesh) c.material = matS })
+    }
+
+    const patternOpt = manifest.categories.wallPattern?.options.find(o => o.id === wallPatternId)
+    if (!patternOpt?.alphaTexture) { clearEtch(); return }
+
+    const makeTex = (baseTex, offsetU) => {
+      const t = baseTex.clone()
+      t.wrapS = t.wrapT = THREE.RepeatWrapping
+      t.repeat.set(4, 4)
+      t.offset.set(offsetU, 0)
+      t.anisotropy = gl.capabilities.getMaxAnisotropy()
+      t.minFilter = THREE.LinearMipmapLinearFilter
+      t.magFilter = THREE.LinearFilter
+      t.needsUpdate = true
+      return t
+    }
+
+    const applyAlpha = (baseTex) => {
+      if (cancelled) return
+      matC.alphaMap = makeTex(baseTex, 0)
+      matC.opacity = 1; matC.needsUpdate = true
+      matS.alphaMap = makeTex(baseTex, 0.5)
+      matS.opacity = 1; matS.needsUpdate = true
+      centerEtch.traverse(c => { if (c.isMesh) c.material = matC })
+      sidesEtch.traverse(c  => { if (c.isMesh) c.material = matS })
+    }
+
+    if (patternOpt.alphaTexture.endsWith('.png')) {
+      new THREE.TextureLoader().load(patternOpt.alphaTexture, applyAlpha)
+    } else {
+      loadBasisTexture(patternOpt.alphaTexture, gl).then(applyAlpha)
+        .catch(e => console.warn('[WallPanels] etch alpha failed:', e.message))
+    }
+
+    return () => { cancelled = true }
+  }, [wallPatternId, centerEtch, sidesEtch, gl])
 
   return (
     <group>
       <primitive object={center} />
       <primitive object={sides} />
+      <primitive object={centerEtch} renderOrder={1} />
+      <primitive object={sidesEtch} renderOrder={1} />
     </group>
   )
 }

@@ -4,7 +4,7 @@
     "panels": { "center": "SHOWER-SURROUND-CENTER-ELITE.glb", "sides": "SHOWER-SURROUND-SIDES-ELITE.glb" }
   },
   "defaults": {
-    "base": "shower", "walls": "white", "trim": "chrome",
+    "base": "shower", "walls": "white", "wallPattern": "none", "trim": "chrome",
     "enclosure": "curtain-rod", "seat": "none", "shelf": "none",
     "grabBar": "none", "showerHead": "rain-head"
   },
@@ -34,6 +34,24 @@
         { "id": "tuscany",         "label": "Tuscany",         "thumbnail": "/textures/walls/Tuscany.jpg",      "basisTexture": "/textures/walls/Tuscany.jpg" },
         { "id": "versailles",      "label": "Versailles",      "thumbnail": "/textures/walls/Versailles.jpg",   "basisTexture": "/textures/walls/Versailles.jpg" },
         { "id": "white-travertine","label": "White Travertine","thumbnail": "/textures/Travertine.png",         "basisTexture": "/textures/basis/Travertine_Bianco.basis" }
+      ]
+    },
+    "wallPattern": {
+      "label": "Wall Pattern",
+      "options": [
+        { "id": "none",       "label": "Smooth",      "thumbnail": "/textures/Smooth.png" },
+        { "id": "bayview",    "label": "Bayview",     "thumbnail": "/textures/Laser-Etched Bayview.png",     "alphaTexture": "/textures/etch_bayview_alpha.basis" },
+        { "id": "chevron",    "label": "Chevron",     "thumbnail": "/textures/Impressions Chevron.png",      "alphaTexture": "/textures/etch_chevron_alpha.png" },
+        { "id": "flagstone",  "label": "Flagstone",   "thumbnail": "/textures/Laser-Etched Flagstone.png",   "alphaTexture": "/textures/etch_flagstone_alpha.basis" },
+        { "id": "herringbone","label": "Herringbone", "thumbnail": "/textures/Laser-Etched Herringbone.png", "alphaTexture": "/textures/etch_herringbone_alpha.basis" },
+        { "id": "hexagon",    "label": "Hexagon",     "thumbnail": "/textures/Laser-Etched Hexagonal.png" },
+        { "id": "hopscotch",  "label": "Hopscotch",   "thumbnail": "/textures/Laser-Etched Hopscotch.png",   "alphaTexture": "/textures/etch_hopscotch_alpha.basis" },
+        { "id": "monument",   "label": "Monument",    "thumbnail": "/textures/Laser-Etched Monument.png" },
+        { "id": "oblong",     "label": "Oblong",      "thumbnail": "/textures/Reveal Laser Etched Oblong Thumb.png" },
+        { "id": "panorama",   "label": "Panorama",    "thumbnail": "/textures/Laser-Etched Panorama.png",    "alphaTexture": "/textures/etch_panorama_alpha.basis" },
+        { "id": "romanblock", "label": "Roman Block", "thumbnail": "/textures/Laser-Etched Roman Block.png", "alphaTexture": "/textures/etch_romanblock_alpha.basis" },
+        { "id": "scalloped",  "label": "Scalloped",   "thumbnail": "/textures/Scalloped.png" },
+        { "id": "subway",     "label": "Subway",      "thumbnail": "/textures/Laser-Etched Subway.png" }
       ]
     },
     "base": {
