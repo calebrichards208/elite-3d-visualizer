@@ -360,8 +360,8 @@ function CameraRig({ recenterKey, showerCenter }) {
     if (!controlsRef.current) return
     const { x, y, z } = showerCenter
     const mobile = window.innerWidth <= 768
-    camera.position.set(x, y + (mobile ? 0.4 : 1.0), z + 4)
-    controlsRef.current.target.set(x, y + (mobile ? -0.3 : 0.3), z)
+    camera.position.set(x, y + (mobile ? 0.7 : 1.0), z + 4)
+    controlsRef.current.target.set(x, y + (mobile ? 0.0 : 0.3), z)
     controlsRef.current.update()
     controlsRef.current.saveState()
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -716,7 +716,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
         onClick={() => setShowNudge(v => !v)}
         title="Toggle nudge tool"
         style={{
-          position: 'fixed', bottom: 16, left: 16, zIndex: 101,
+          position: 'fixed', top: 16, left: 16, zIndex: 101,
           width: 28, height: 28, borderRadius: '50%', border: 'none',
           background: showNudge ? 'rgba(201,162,90,0.9)' : 'rgba(255,255,255,0.08)',
           color: showNudge ? '#0a0b0f' : 'rgba(255,255,255,0.3)',
