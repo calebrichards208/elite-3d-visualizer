@@ -70,3 +70,18 @@ const selections = {
 - localStorage for design persistence across refreshes
 - All assets served from `/public/` — zero CDN dependencies
 - Deploy: `git push` → Cloudflare auto-builds
+
+## ⚠️ Commit Rule — Non-Negotiable
+**End every working session with a commit and push. No exceptions.**
+
+```bash
+git add src/ public/
+git commit -m "short description of what changed"
+git push origin master
+```
+
+This project lost a full day of work because files existed locally but were never committed.
+The repo is the only backup. If it's not on GitHub, it doesn't exist.
+
+Claude: before ending any session where code was written, run the above commands.
+Do not ask — just do it as the last step of every task.
