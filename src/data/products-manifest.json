@@ -30,7 +30,7 @@
         { "id": "sandalwood",      "label": "Sandalwood",      "thumbnail": "/textures/Sandalwood_thumb.png",   "basisTexture": "/textures/basis/Sandalwood2.basis" },
         { "id": "santa-cruz",      "label": "Santa Cruz",      "thumbnail": "/textures/Brecchia.png",           "basisTexture": "/textures/basis/River_Rock.basis" },
         { "id": "santorini-white", "label": "Santorini White", "thumbnail": "/textures/Calcutta Marble.png",    "basisTexture": "/textures/basis/Calcutta.basis" },
-        { "id": "sierra-sand",     "label": "Sierra Sand",     "thumbnail": "/textures/Sandbar.png",            "basisTexture": "/textures/basis/Brecchia.basis" },
+        { "id": "sierra-sand",     "label": "Sierra Sand",     "thumbnail": "/textures/Brecchia.png",           "basisTexture": "/textures/basis/Brecchia.basis" },
         { "id": "tuscany",         "label": "Tuscany",         "thumbnail": "/textures/walls/Tuscany.jpg",      "basisTexture": "/textures/walls/Tuscany.jpg" },
         { "id": "versailles",      "label": "Versailles",      "thumbnail": "/textures/walls/Versailles.jpg",   "basisTexture": "/textures/walls/Versailles.jpg" },
         { "id": "white-travertine","label": "White Travertine","thumbnail": "/textures/Travertine.png",         "basisTexture": "/textures/basis/Travertine_Bianco.basis" }
