@@ -24,6 +24,9 @@ const WALL_HEX = {
   'linen':           '#e2d8c8',
   'gray':            '#9a9a9c',
   'sandbar':         '#c2b290',
+  'grayline':        '#a0a0a4',
+  'london-fog':      '#c0bfbb',
+  'othello':         '#2e2e30',
 }
 
 // ─── Hardcoded wet-area positions (found via keyboard positioning tool) ───────

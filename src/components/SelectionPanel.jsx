@@ -1,56 +1,178 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import manifest from '../data/products-manifest.json'
 
+const MAIN_TABS = [
+  { key: 'bath',     label: 'Bath Area', enabled: true  },
+  { key: 'vanity',   label: 'Vanity',    enabled: false },
+  { key: 'flooring', label: 'Flooring',  enabled: false },
+  { key: 'toilet',   label: 'Toilet',    enabled: false },
+]
+
+const SUB_TABS = [
+  { key: 'walls',      label: 'Shower Walls',  catKey: 'walls' },
+  { key: 'base',       label: 'Base Type',      catKey: 'base' },
+  { key: 'trim',       label: 'Fixture Color',  catKey: 'trim' },
+  { key: 'showerHead', label: 'Shower Head',    catKey: 'showerHead' },
+  { key: 'enclosure',  label: 'Enclosure',      catKey: 'enclosure' },
+  { key: 'seat',       label: 'Seat',           catKey: 'seat' },
+  { key: 'grabBar',    label: 'Grab Bars',       catKey: 'grabBar' },
+  { key: 'shelf',      label: 'Shelf',           catKey: 'shelf' },
+]
+
 export function SelectionPanel({ selections, onUpdate }) {
-  const [mainTab, setMainTab] = useState('base')
-  const [activeTab, setActiveTab] = useState('base')
+  const [activeTab, setActiveTab] = useState('walls')
+  const subScrollRef = useRef(null)
 
-  const category = manifest.categories[activeTab]
-  if (!category) return null
-
-  const options = category.options || []
-  const selected = selections[activeTab] || manifest.defaults[activeTab]
+  const currentSub = SUB_TABS.find(t => t.key === activeTab)
+  const category   = manifest.categories[currentSub?.catKey]
+  const options    = category?.options ?? []
+  const currentVal = selections[activeTab] ?? manifest.defaults[activeTab]
 
   return (
     <div style={{
-      position: 'absolute', right: 0, top: 0, bottom: 0, width: '25%',
-      background: '#1a1a1a', borderLeft: '1px solid #333',
-      display: 'flex', flexDirection: 'column', padding: '16px',
-      fontFamily: 'system-ui', color: '#eee', fontSize: '13px', overflowY: 'auto'
+      position: 'fixed',
+      bottom: 24,
+      right: 24,
+      width: 360,
+      maxHeight: 580,
+      background: '#ffffff',
+      borderRadius: 18,
+      boxShadow: '0 8px 48px rgba(0,0,0,0.18), 0 2px 12px rgba(0,0,0,0.08)',
+      display: 'flex',
+      flexDirection: 'column',
+      overflow: 'hidden',
+      fontFamily: "'Inter', 'SF Pro Text', system-ui, sans-serif",
+      userSelect: 'none',
     }}>
-      <h2 style={{ margin: '0 0 20px', fontSize: '16px', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-        {category.label}
-      </h2>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px', flexGrow: 1 }}>
-        {options.map(opt => (
+      {/* ── Main area tabs ── */}
+      <div style={{
+        display: 'flex',
+        borderBottom: '1px solid #f0f0f0',
+        background: '#fff',
+      }}>
+        {MAIN_TABS.map(tab => (
           <button
-            key={opt.id}
-            onClick={() => onUpdate(activeTab, opt.id)}
+            key={tab.key}
+            disabled={!tab.enabled}
             style={{
-              padding: '10px', borderRadius: '6px', border: selected === opt.id ? '2px solid #c9a25a' : '1px solid #444',
-              background: selected === opt.id ? 'rgba(201,162,90,0.1)' : '#222',
-              color: '#eee', cursor: 'pointer', fontSize: '11px', textAlign: 'center', transition: 'all 0.2s'
-            }}>
-            {opt.thumbnail && <img src={opt.thumbnail} alt={opt.label} style={{ width: '100%', height: '60px', objectFit: 'cover', borderRadius: '4px', marginBottom: '6px' }} />}
-            {opt.label}
+              flex: 1,
+              padding: '14px 6px 12px',
+              border: 'none',
+              background: 'none',
+              fontSize: '13px',
+              fontWeight: tab.enabled ? 700 : 500,
+              color: tab.enabled ? '#111' : '#bbb',
+              cursor: tab.enabled ? 'pointer' : 'default',
+              borderBottom: tab.enabled ? '2px solid #111' : '2px solid transparent',
+              marginBottom: -1,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            {tab.label}
           </button>
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap', borderTop: '1px solid #333', paddingTop: '12px' }}>
-        {Object.keys(manifest.categories).map(catKey => (
-          <button
-            key={catKey}
-            onClick={() => setActiveTab(catKey)}
-            style={{
-              padding: '6px 12px', borderRadius: '4px', border: 'none',
-              background: activeTab === catKey ? '#c9a25a' : '#333',
-              color: activeTab === catKey ? '#000' : '#aaa', cursor: 'pointer', fontSize: '10px', fontWeight: 500
-            }}>
-            {manifest.categories[catKey].label}
-          </button>
-        ))}
+      {/* ── Browse Options label + sub-tabs ── */}
+      <div style={{ padding: '12px 16px 0', background: '#fff' }}>
+        <div style={{
+          fontSize: '10px', fontWeight: 700, color: '#999',
+          letterSpacing: '0.1em', marginBottom: '10px',
+        }}>
+          BROWSE OPTIONS
+        </div>
+        <div
+          ref={subScrollRef}
+          style={{
+            display: 'flex', gap: '6px',
+            overflowX: 'auto', paddingBottom: '12px',
+            scrollbarWidth: 'none', msOverflowStyle: 'none',
+          }}
+        >
+          {SUB_TABS.map(tab => {
+            const active = activeTab === tab.key
+            return (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key)}
+                style={{
+                  flexShrink: 0,
+                  padding: '6px 13px',
+                  borderRadius: 20,
+                  border: active ? '1.5px solid #111' : '1.5px solid #e0e0e0',
+                  background: active ? '#111' : '#fff',
+                  color: active ? '#fff' : '#555',
+                  fontSize: '12px',
+                  fontWeight: active ? 600 : 500,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  transition: 'all 0.12s',
+                }}
+              >
+                {tab.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* ── Thumbnail grid ── */}
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: '4px 14px 14px',
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '8px',
+        alignContent: 'start',
+        scrollbarWidth: 'thin',
+        scrollbarColor: '#e0e0e0 transparent',
+      }}>
+        {options.map(opt => {
+          const selected = currentVal === opt.id
+          return (
+            <button
+              key={opt.id}
+              onClick={() => onUpdate(activeTab, opt.id)}
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 8px 10px',
+                background: selected ? '#fdf8f0' : '#fafafa',
+                border: selected ? '2px solid #c9a25a' : '1.5px solid #eee',
+                borderRadius: 10,
+                cursor: 'pointer',
+                transition: 'border-color 0.12s, background 0.12s',
+                textAlign: 'center',
+              }}
+            >
+              {opt.thumbnail && (
+                <img
+                  src={opt.thumbnail}
+                  alt={opt.label}
+                  style={{
+                    width: '100%',
+                    aspectRatio: '1 / 1',
+                    objectFit: 'cover',
+                    borderRadius: 7,
+                    display: 'block',
+                  }}
+                />
+              )}
+              <span style={{
+                fontSize: '11px',
+                fontWeight: selected ? 600 : 500,
+                color: selected ? '#c9a25a' : '#444',
+                lineHeight: 1.3,
+              }}>
+                {opt.label}
+              </span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )
