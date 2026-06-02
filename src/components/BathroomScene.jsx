@@ -142,7 +142,7 @@ function WallPanels({ wallId, wallPatternId }) {
 
       if (colorOpt?.basisTexture) {
         try {
-          const tex = await loadBasisTexture(colorOpt.basisTexture)
+          const tex = await loadBasisTexture(colorOpt.basisTexture, gl)
           if (cancelled) return
           tex.colorSpace = THREE.SRGBColorSpace
           tex.wrapS = tex.wrapT = THREE.RepeatWrapping
@@ -160,7 +160,7 @@ function WallPanels({ wallId, wallPatternId }) {
 
       if (patternOpt?.basisNormal && (wallPatternId !== 'none' || colorOpt?.basisAlpha)) {
         try {
-          const nTex = await loadBasisTexture(patternOpt.basisNormal)
+          const nTex = await loadBasisTexture(patternOpt.basisNormal, gl)
           if (cancelled) return
           nTex.wrapS = nTex.wrapT = THREE.RepeatWrapping
           nTex.repeat.set(4, 4)
@@ -204,6 +204,7 @@ function BaseModel({ selection }) {
 
 function GlassModel({ url, visible, rain = false }) {
   const { scene: glb } = useGLTF(url)
+  const { gl } = useThree()
   const model = useMemo(() => glb.clone(true), [glb])
 
   const glassMat = useRef(new THREE.MeshStandardMaterial({
@@ -224,7 +225,7 @@ function GlassModel({ url, visible, rain = false }) {
       mat.roughness = 0.08
       mat.opacity   = 0.28
       mat.color.set('#c8d8e0')
-      loadBasisTexture('/textures/basis/rain_normal.basis').then(tex => {
+      loadBasisTexture('/textures/basis/rain_normal.basis', gl).then(tex => {
         tex.wrapS = tex.wrapT = THREE.RepeatWrapping
         tex.repeat.set(1.5, 6)
         tex.needsUpdate = true
