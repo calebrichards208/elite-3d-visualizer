@@ -1,9 +1,25 @@
+import { useState } from 'react'
+import { useSelections } from './hooks/useSelections.js'
+import BathroomScene from './components/BathroomScene.jsx'
+import { SelectionPanel } from './components/SelectionPanel.jsx'
 import './index.css'
 
 export default function App() {
+  const { selections, update } = useSelections()
+  const [recenterKey, setRecenterKey]     = useState(0)
+  const [showRoomWalls, setShowRoomWalls] = useState(true)
+
   return (
-    <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white">
-      <p className="text-xl">Elite 3D Visualizer — scaffold ready</p>
+    <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+      <BathroomScene
+        selections={selections}
+        recenterKey={recenterKey}
+        showRoomWalls={showRoomWalls}
+      />
+      <SelectionPanel
+        selections={selections}
+        onUpdate={update}
+      />
     </div>
   )
 }
