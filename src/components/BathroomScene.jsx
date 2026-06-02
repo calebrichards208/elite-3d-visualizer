@@ -1,5 +1,5 @@
 import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls, useGLTF, Html } from '@react-three/drei'
+import { OrbitControls, useGLTF, Html, Environment } from '@react-three/drei'
 import { loadBasisTexture } from '../utils/loadBasisTexture.js'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -427,6 +427,7 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
 
   return (
     <>
+      <Environment preset="apartment" background={false} />
       <ambientLight intensity={0.9} color="#fff5e8" />
       <directionalLight position={[0, 5, 3]}  intensity={2.0} color="#ffe9c0" castShadow />
       <directionalLight position={[4, 3, 2]}  intensity={0.8} color="#ffffff" />
