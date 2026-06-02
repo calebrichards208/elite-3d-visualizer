@@ -22,7 +22,6 @@ const SUB_TABS = [
 export function SelectionPanel({ selections, onUpdate }) {
   const [activeTab, setActiveTab] = useState('walls')
   const [minimized, setMinimized] = useState(false)
-  const [hovered, setHovered] = useState(false)
   const subScrollRef = useRef(null)
   const activeTabRef = useRef(null)
 
@@ -65,11 +64,11 @@ export function SelectionPanel({ selections, onUpdate }) {
         position: 'fixed',
         ...(mobile
           ? { bottom: 16, left: 16, right: 16, width: 'auto' }
-          : { bottom: 24, right: 24, width: 360 }),
+          : { bottom: 0, right: 0, width: 380, borderRadius: '18px 0 0 0' }),
         height: 48,
         background: '#ffffff',
-        borderRadius: 14,
-        boxShadow: '0 8px 48px rgba(0,0,0,0.18), 0 2px 12px rgba(0,0,0,0.08)',
+        ...(mobile ? { borderRadius: 14 } : {}),
+        boxShadow: mobile ? '0 8px 48px rgba(0,0,0,0.18)' : '-4px 0 24px rgba(0,0,0,0.10)',
         fontFamily: "'Inter', 'SF Pro Text', system-ui, sans-serif",
         userSelect: 'none',
       }}>
@@ -86,20 +85,15 @@ export function SelectionPanel({ selections, onUpdate }) {
       position: 'fixed',
       ...(mobile
         ? { bottom: 0, left: 0, right: 0, height: '52vh', borderRadius: '18px 18px 0 0' }
-        : { bottom: 24, right: 24, width: 360, height: 560, borderRadius: 18 }),
+        : { bottom: 0, right: 0, width: 380, height: '100vh', borderRadius: '18px 0 0 0' }),
       background: '#ffffff',
-      boxShadow: '0 8px 48px rgba(0,0,0,0.18), 0 2px 12px rgba(0,0,0,0.08)',
+      boxShadow: '-4px 0 24px rgba(0,0,0,0.10)',
       display: 'flex',
       flexDirection: 'column',
       overflow: 'hidden',
       fontFamily: "'Inter', 'SF Pro Text', system-ui, sans-serif",
       userSelect: 'none',
-      opacity: (!mobile && !hovered) ? 0.15 : 1,
-      transition: 'opacity 0.25s ease',
-    }}
-    onMouseEnter={() => setHovered(true)}
-    onMouseLeave={() => setHovered(false)}
-    >
+    }}>
 
       {/* ── Header: matches minimized bar ── */}
       <div style={headerStyle} onClick={() => setMinimized(true)}>
