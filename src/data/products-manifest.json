@@ -13,7 +13,7 @@
       "label": "Shower Walls",
       "options": [
         { "id": "white",           "label": "White",           "thumbnail": "/textures/White.png",              "basisTexture": "/textures/basis/white.basis" },
-        { "id": "matte-white",     "label": "Matte White",     "thumbnail": "/textures/White (1).png" },
+        { "id": "matte-white",     "label": "Matte White",     "thumbnail": "/textures/White.png" },
         { "id": "almond",          "label": "Almond",          "thumbnail": "/textures/Almond.png" },
         { "id": "biscuit",         "label": "Biscuit",         "thumbnail": "/textures/Biscuit.png" },
         { "id": "linen",           "label": "Linen",           "thumbnail": "/textures/Linen.png",              "basisTexture": "/textures/basis/Linen.basis" },
