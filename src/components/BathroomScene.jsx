@@ -601,6 +601,7 @@ function LoadingOverlay() {
 
 export default function BathroomScene({ selections, recenterKey, showRoomWalls }) {
   const [active, setActive] = useState(null)
+  const [showNudge, setShowNudge] = useState(false)
   const [nudges, setNudges] = useState({
     base:[0,0,0], valve:[0,0,0], acc:[0,0,0], seat:[0,0,0],
     head:[0,0,0], gbv:[0,0,0], gbd:[0,0,0], stddoor:[0,0,0],
@@ -710,7 +711,19 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
   return (
     <>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      <NudgeOverlay active={active} setActive={setActive} positions={positions} rotations={gbRots} />
+      <button
+        onClick={() => setShowNudge(v => !v)}
+        title="Toggle nudge tool"
+        style={{
+          position: 'fixed', bottom: 16, left: 16, zIndex: 101,
+          width: 28, height: 28, borderRadius: '50%', border: 'none',
+          background: showNudge ? 'rgba(201,162,90,0.9)' : 'rgba(255,255,255,0.08)',
+          color: showNudge ? '#0a0b0f' : 'rgba(255,255,255,0.3)',
+          cursor: 'pointer', fontSize: '14px', lineHeight: 1,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}
+      >⚙</button>
+      {showNudge && <NudgeOverlay active={active} setActive={setActive} positions={positions} rotations={gbRots} />}
       <Canvas
         camera={{ position: [0, 1.5, 6], fov: 52, near: 0.05, far: 80 }}
         shadows
