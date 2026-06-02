@@ -415,7 +415,7 @@ function CameraRig({ recenterKey, showerCenter }) {
     if (!controlsRef.current) return
     const { x, y, z } = showerCenter
     const mobile = window.innerWidth <= 768
-    camera.position.set(x, y + (mobile ? 0.7 : 1.0), z + 4)
+    camera.position.set(x, y + (mobile ? 0.7 : 1.0), z + (mobile ? 5.5 : 4))
     controlsRef.current.target.set(x, y + (mobile ? 0.0 : 0.3), z)
     controlsRef.current.update()
     controlsRef.current.saveState()
