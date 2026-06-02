@@ -350,6 +350,54 @@ function OptionalModel({ url, visible }) {
   return <primitive object={scene} visible={visible} />
 }
 
+// ─── Seat models ──────────────────────────────────────────────────────────────
+
+// Bench/corner seat GLBs contain two mirrored seats (one per side wall).
+// Node positions are all 0,0,0 in these GLBs — must read geometry vertex centroids.
+function LeftSeatModel({ url, visible }) {
+  const { scene } = useGLTF(url)
+  const cloned = useMemo(() => {
+    const clone = scene.clone(true)
+    clone.updateMatrixWorld(true)
+
+    const infos = []
+    clone.traverse(child => {
+      if (child.isMesh && child.geometry?.attributes?.position) {
+        const box = new THREE.Box3().setFromBufferAttribute(child.geometry.attributes.position)
+        const center = box.getCenter(new THREE.Vector3()).applyMatrix4(child.matrixWorld)
+        infos.push({ mesh: child, center })
+      }
+    })
+
+    if (infos.length > 1) {
+      const spread = axis => {
+        const vals = infos.map(i => i.center[axis])
+        return Math.max(...vals) - Math.min(...vals)
+      }
+      const axis = spread('z') >= spread('x') ? 'z' : 'x'
+      const vals = infos.map(i => i.center[axis])
+      const mid = (Math.max(...vals) + Math.min(...vals)) / 2
+      infos.forEach(({ mesh, center }) => { if (center[axis] > mid) mesh.visible = false })
+    }
+
+    return clone
+  }, [scene])
+  return <primitive object={cloned} visible={visible} />
+}
+
+const WOOD_MAT = new THREE.MeshStandardMaterial({ color: '#8a6540', roughness: 0.72, metalness: 0.0 })
+
+// Fold-down GLB has no embedded materials — apply a default wood look.
+function FoldDownSeat({ visible }) {
+  const { scene } = useGLTF('/models/MOEN_BENCH_2.glb')
+  const cloned = useMemo(() => {
+    const clone = scene.clone(true)
+    clone.traverse(child => { if (child.isMesh) child.material = WOOD_MAT })
+    return clone
+  }, [scene])
+  return <primitive object={cloned} visible={visible} />
+}
+
 // ─── Camera ───────────────────────────────────────────────────────────────────
 
 function CameraRig({ recenterKey, showerCenter }) {
@@ -521,12 +569,12 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
       </group>
 
       <group position={positions.seat} rotation={[0, Math.PI / 2, 0]}>
-        <OptionalModel url="/models/BENCH-SHOWER-SEAT.glb"     visible={selections.seat === 'bench'} />
-        <OptionalModel url="/models/HEXAGONAL-CORNER-SEAT.glb" visible={selections.seat === 'corner'} />
+        <LeftSeatModel url="/models/BENCH-SHOWER-SEAT.glb"     visible={selections.seat === 'bench'} />
+        <LeftSeatModel url="/models/HEXAGONAL-CORNER-SEAT.glb" visible={selections.seat === 'corner'} />
       </group>
 
       <group position={FOLD_DOWN_POS} rotation={[0, Math.PI / 2, 0]}>
-        <OptionalModel url="/models/MOEN_BENCH_2.glb" visible={selections.seat === 'fold-down'} />
+        <FoldDownSeat visible={selections.seat === 'fold-down'} />
       </group>
 
       <group position={SHOWER_WET_POS} rotation={[0, Math.PI / 2, 0]}
