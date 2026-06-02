@@ -427,12 +427,12 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
 
   return (
     <>
-      <Environment preset="apartment" background={false} />
-      <ambientLight intensity={0.9} color="#fff5e8" />
-      <directionalLight position={[0, 5, 3]}  intensity={2.0} color="#ffe9c0" castShadow />
-      <directionalLight position={[4, 3, 2]}  intensity={0.8} color="#ffffff" />
-      <directionalLight position={[-4, 3, 2]} intensity={0.8} color="#ffffff" />
-      <directionalLight position={[0, 3, -3]} intensity={0.4} color="#d0e8ff" />
+      <Environment preset="studio" background={false} environmentIntensity={0.3} />
+      <ambientLight intensity={0.4} color="#fff5e8" />
+      <directionalLight position={[0, 5, 3]}  intensity={1.4} color="#ffe9c0" castShadow />
+      <directionalLight position={[4, 3, 2]}  intensity={0.6} color="#ffffff" />
+      <directionalLight position={[-4, 3, 2]} intensity={0.6} color="#ffffff" />
+      <directionalLight position={[0, 3, -3]} intensity={0.3} color="#d0e8ff" />
 
       {STATIC_ENV_URLS.map(url => <EnvModel key={url} url={url} />)}
       <EnvModel key={ROOM_WALL_URL} url={ROOM_WALL_URL} visible={showRoomWalls} />
