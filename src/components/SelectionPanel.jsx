@@ -169,13 +169,19 @@ export function SelectionPanel({ selections, onUpdate }) {
       </div>
 
       {/* ── Thumbnail grid ── */}
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: 48,
+          background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.95))',
+          pointerEvents: 'none', zIndex: 1,
+        }} />
       <div style={{
-        flex: 1,
+        height: '100%',
         overflowY: 'auto',
         padding: '4px 14px 14px',
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '8px',
+        gridTemplateColumns: mobile ? '1fr 1fr 1fr' : '1fr 1fr',
+        gap: mobile ? '6px' : '8px',
         alignContent: 'start',
         scrollbarWidth: 'thin',
         scrollbarColor: '#e0e0e0 transparent',
@@ -224,6 +230,7 @@ export function SelectionPanel({ selections, onUpdate }) {
             </button>
           )
         })}
+      </div>
       </div>
     </div>
   )
