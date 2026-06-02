@@ -22,6 +22,7 @@ const SUB_TABS = [
 export function SelectionPanel({ selections, onUpdate }) {
   const [activeTab, setActiveTab] = useState('walls')
   const [minimized, setMinimized] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const subScrollRef = useRef(null)
   const activeTabRef = useRef(null)
 
@@ -93,7 +94,12 @@ export function SelectionPanel({ selections, onUpdate }) {
       overflow: 'hidden',
       fontFamily: "'Inter', 'SF Pro Text', system-ui, sans-serif",
       userSelect: 'none',
-    }}>
+      opacity: (!mobile && !hovered) ? 0.15 : 1,
+      transition: 'opacity 0.25s ease',
+    }}
+    onMouseEnter={() => setHovered(true)}
+    onMouseLeave={() => setHovered(false)}
+    >
 
       {/* ── Header: matches minimized bar ── */}
       <div style={headerStyle} onClick={() => setMinimized(true)}>
