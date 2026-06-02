@@ -408,6 +408,9 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
     new THREE.Box3().setFromObject(surroundRef).getCenter(new THREE.Vector3())
   ), [surroundRef])
 
+  const gbvQuat = useMemo(() => new THREE.Quaternion(...gbRots.gbv), [gbRots.gbv])
+  const gbdQuat = useMemo(() => new THREE.Quaternion(...gbRots.gbd), [gbRots.gbd])
+
   const basePosRaw = selections.base === 'tub' ? TUB_WET_POS : SHOWER_WET_POS
   const positions = {
     base:      add3(basePosRaw,        nudges.base),
@@ -492,11 +495,11 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
                           visible={selections.base === 'tub'} />
       </group>
 
-      <group position={positions.gbv} quaternion={rotations.gbv}>
+      <group position={positions.gbv} quaternion={gbvQuat}>
         <TrimColoredModel url="/models/LA-GRAB-BAR-24.glb" trimId={selections.trim}
                           visible={selections.grabBar === 'grab-bar-set'} />
       </group>
-      <group position={positions.gbd} quaternion={rotations.gbd}>
+      <group position={positions.gbd} quaternion={gbdQuat}>
         <TrimColoredModel url="/models/LA-GRAB-BAR-24.glb" trimId={selections.trim}
                           visible={selections.grabBar === 'grab-bar-set'} />
       </group>
