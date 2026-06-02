@@ -34,7 +34,7 @@ export function SelectionPanel({ selections, onUpdate }) {
       bottom: 24,
       right: 24,
       width: 360,
-      maxHeight: 580,
+      height: 560,
       background: '#ffffff',
       borderRadius: 18,
       boxShadow: '0 8px 48px rgba(0,0,0,0.18), 0 2px 12px rgba(0,0,0,0.08)',
