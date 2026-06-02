@@ -18,15 +18,27 @@ const TRIM_PROPS = {
 
 // ─── Hex fallback colors for solid wall options ───────────────────────────────
 const WALL_HEX = {
-  'white':           '#ece9e4',
+  'white':           '#f8f7f5',
+  'matte-white':     '#f5f5f3',
   'almond':          '#d6c8a8',
   'biscuit':         '#cebf9e',
   'linen':           '#e2d8c8',
   'gray':            '#9a9a9c',
   'sandbar':         '#c2b290',
-  'grayline':        '#a0a0a4',
-  'london-fog':      '#c0bfbb',
-  'othello':         '#2e2e30',
+  'arctic-ice':      '#b8bcc0',
+  'canyon-rock':     '#b89470',
+  'carbon-ash':      '#5a5a5a',
+  'evo':             '#f0f0ee',
+  'glacier-ice':     '#ddeef2',
+  'horizon-beige':   '#d0c4a8',
+  'metapeake':       '#c8ccc8',
+  'napoli-marble':   '#c4bcb4',
+  'santa-cruz':      '#c0a880',
+  'santorini-white': '#f0ece8',
+  'sierra-sand':     '#c8b080',
+  'tuscany':         '#d4c0a0',
+  'versailles':      '#dcd8d4',
+  'white-travertine':'#f0ebe0',
 }
 
 // ─── Hardcoded wet-area positions (found via keyboard positioning tool) ───────
