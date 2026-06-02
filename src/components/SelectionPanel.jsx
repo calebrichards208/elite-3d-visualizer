@@ -9,14 +9,14 @@ const MAIN_TABS = [
 ]
 
 const SUB_TABS = [
-  { key: 'walls',      label: 'Shower Walls',  catKey: 'walls' },
-  { key: 'base',       label: 'Base Type',      catKey: 'base' },
-  { key: 'trim',       label: 'Fixture Color',  catKey: 'trim' },
-  { key: 'showerHead', label: 'Shower Head',    catKey: 'showerHead' },
-  { key: 'enclosure',  label: 'Enclosure',      catKey: 'enclosure' },
-  { key: 'seat',       label: 'Seat',           catKey: 'seat' },
-  { key: 'grabBar',    label: 'Grab Bars',       catKey: 'grabBar' },
-  { key: 'shelf',      label: 'Shelf',           catKey: 'shelf' },
+  { key: 'walls',      label: 'Shower Walls', catKey: 'walls' },
+  { key: 'base',       label: 'Base Type',     catKey: 'base' },
+  { key: 'trim',       label: 'Fixture Color', catKey: 'trim' },
+  { key: 'showerHead', label: 'Shower Head',   catKey: 'showerHead' },
+  { key: 'enclosure',  label: 'Enclosure',     catKey: 'enclosure' },
+  { key: 'seat',       label: 'Seat',          catKey: 'seat' },
+  { key: 'grabBar',    label: 'Grab Bars',     catKey: 'grabBar' },
+  { key: 'shelf',      label: 'Shelf',         catKey: 'shelf' },
 ]
 
 export function SelectionPanel({ selections, onUpdate }) {
@@ -24,33 +24,51 @@ export function SelectionPanel({ selections, onUpdate }) {
   const [minimized, setMinimized] = useState(false)
   const subScrollRef = useRef(null)
 
+  const mobile = window.innerWidth <= 768
+
   const currentSub = SUB_TABS.find(t => t.key === activeTab)
   const category   = manifest.categories[currentSub?.catKey]
   const options    = category?.options ?? []
   const currentVal = selections[activeTab] ?? manifest.defaults[activeTab]
 
+  const headerStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '0 16px',
+    height: 48,
+    flexShrink: 0,
+    cursor: 'pointer',
+    borderBottom: minimized ? 'none' : '1px solid #f0f0f0',
+  }
+
+  const labelStyle = {
+    fontSize: '13px', fontWeight: 600, color: '#111', letterSpacing: '-0.01em',
+  }
+
+  const chevronStyle = {
+    fontSize: '18px', color: '#999', lineHeight: 1, userSelect: 'none',
+  }
+
+  // Minimized: slim bar matching the header exactly
   if (minimized) {
-    const mobile = window.innerWidth <= 768
     return (
       <div style={{
         position: 'fixed',
-        ...(mobile ? { top: 16, left: 16, right: 16, width: 'auto' } : { bottom: 24, right: 24, width: 360 }),
+        ...(mobile
+          ? { top: 16, left: 16, right: 16, width: 'auto' }
+          : { bottom: 24, right: 24, width: 360 }),
         height: 48,
         background: '#ffffff',
         borderRadius: 14,
         boxShadow: '0 8px 48px rgba(0,0,0,0.18), 0 2px 12px rgba(0,0,0,0.08)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 16px',
         fontFamily: "'Inter', 'SF Pro Text', system-ui, sans-serif",
         userSelect: 'none',
-        cursor: 'pointer',
-      }} onClick={() => setMinimized(false)}>
-        <span style={{ fontSize: '13px', fontWeight: 600, color: '#111', letterSpacing: '-0.01em' }}>
-          Design Options
-        </span>
-        <span style={{ fontSize: '18px', color: '#999', lineHeight: 1 }}>{mobile ? '⌄' : '⌃'}</span>
+      }}>
+        <div style={headerStyle} onClick={() => setMinimized(false)}>
+          <span style={labelStyle}>Design Options</span>
+          <span style={chevronStyle}>⌃</span>
+        </div>
       </div>
     )
   }
@@ -58,12 +76,10 @@ export function SelectionPanel({ selections, onUpdate }) {
   return (
     <div style={{
       position: 'fixed',
-      bottom: 24,
-      right: 24,
-      width: 360,
-      height: 560,
+      ...(mobile
+        ? { top: 0, left: 0, right: 0, height: '52vh', borderRadius: '0 0 18px 18px' }
+        : { bottom: 24, right: 24, width: 360, height: 560, borderRadius: 18 }),
       background: '#ffffff',
-      borderRadius: 18,
       boxShadow: '0 8px 48px rgba(0,0,0,0.18), 0 2px 12px rgba(0,0,0,0.08)',
       display: 'flex',
       flexDirection: 'column',
@@ -72,20 +88,27 @@ export function SelectionPanel({ selections, onUpdate }) {
       userSelect: 'none',
     }}>
 
+      {/* ── Header: matches minimized bar ── */}
+      <div style={headerStyle} onClick={() => setMinimized(true)}>
+        <span style={labelStyle}>Design Options</span>
+        <span style={chevronStyle}>⌄</span>
+      </div>
+
       {/* ── Main area tabs ── */}
       <div style={{
         display: 'flex',
         borderBottom: '1px solid #f0f0f0',
         background: '#fff',
-        alignItems: 'stretch',
+        flexShrink: 0,
       }}>
         {MAIN_TABS.map(tab => (
           <button
             key={tab.key}
             disabled={!tab.enabled}
+            onClick={e => e.stopPropagation()}
             style={{
               flex: 1,
-              padding: '14px 6px 12px',
+              padding: '12px 6px 10px',
               border: 'none',
               background: 'none',
               fontSize: '13px',
@@ -100,30 +123,13 @@ export function SelectionPanel({ selections, onUpdate }) {
             {tab.label}
           </button>
         ))}
-        <button
-          onClick={() => setMinimized(true)}
-          title="Minimize"
-          style={{
-            width: 36,
-            border: 'none',
-            background: 'none',
-            color: '#bbb',
-            fontSize: '18px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            paddingBottom: 4,
-          }}
-        >⌄</button>
       </div>
 
-      {/* ── Browse Options label + sub-tabs ── */}
-      <div style={{ padding: '12px 16px 0', background: '#fff' }}>
+      {/* ── Sub-tabs ── */}
+      <div style={{ padding: '10px 16px 0', background: '#fff', flexShrink: 0 }}>
         <div style={{
           fontSize: '10px', fontWeight: 700, color: '#999',
-          letterSpacing: '0.1em', marginBottom: '10px',
+          letterSpacing: '0.1em', marginBottom: '8px',
         }}>
           BROWSE OPTIONS
         </div>
@@ -131,7 +137,7 @@ export function SelectionPanel({ selections, onUpdate }) {
           ref={subScrollRef}
           style={{
             display: 'flex', gap: '6px',
-            overflowX: 'auto', paddingBottom: '12px',
+            overflowX: 'auto', paddingBottom: '10px',
             scrollbarWidth: 'none', msOverflowStyle: 'none',
           }}
         >
