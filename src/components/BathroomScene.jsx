@@ -524,9 +524,11 @@ function NudgeOverlay({ active, setActive, positions, rotations }) {
 
 function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }) {
   const { scene: surroundRef } = useGLTF('/models/SHOWER-SURROUND-CENTER-ELITE.glb')
-  const nicheCenter = useMemo(() => (
-    new THREE.Box3().setFromObject(surroundRef).getCenter(new THREE.Vector3())
-  ), [surroundRef])
+  const nicheCenter = useMemo(() => {
+    const c = new THREE.Box3().setFromObject(surroundRef).getCenter(new THREE.Vector3())
+    c.z += 0.35
+    return c
+  }, [surroundRef])
 
   const gbvQuat = useMemo(() => new THREE.Quaternion(...gbRots.gbv), [gbRots.gbv])
   const gbdQuat = useMemo(() => new THREE.Quaternion(...gbRots.gbd), [gbRots.gbd])
