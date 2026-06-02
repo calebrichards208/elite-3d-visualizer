@@ -56,7 +56,7 @@ export function SelectionPanel({ selections, onUpdate }) {
       <div style={{
         position: 'fixed',
         ...(mobile
-          ? { top: 16, left: 16, right: 16, width: 'auto' }
+          ? { bottom: 16, left: 16, right: 16, width: 'auto' }
           : { bottom: 24, right: 24, width: 360 }),
         height: 48,
         background: '#ffffff',
@@ -180,8 +180,8 @@ export function SelectionPanel({ selections, onUpdate }) {
         overflowY: 'auto',
         padding: '4px 14px 14px',
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: '8px',
+        gridTemplateColumns: mobile ? '1fr 1fr 1fr' : '1fr 1fr',
+        gap: mobile ? '6px' : '8px',
         alignContent: 'start',
         scrollbarWidth: 'thin',
         scrollbarColor: '#e0e0e0 transparent',
