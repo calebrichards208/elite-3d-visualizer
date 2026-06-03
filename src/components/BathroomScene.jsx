@@ -1,9 +1,12 @@
 import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls, useGLTF, Html, Environment } from '@react-three/drei'
+import { OrbitControls, useGLTF, Html, Environment, ContactShadows } from '@react-three/drei'
 import { loadBasisTexture } from '../utils/loadBasisTexture.js'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
+import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
 import manifest from '../data/products-manifest.json'
+
+RectAreaLightUniformsLib.init()
 
 // ─── Trim finish presets ──────────────────────────────────────────────────────
 
@@ -157,8 +160,18 @@ function EnvModel({ url, visible = true }) {
       cloned.traverse(child => {
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
-            color: '#b8b8b8',
-            roughness: 0.92,
+            color: '#f4f4f2',
+            roughness: 0.85,
+            metalness: 0,
+          })
+        }
+      })
+    } else if (url === '/models/elite_baseboard.glb') {
+      cloned.traverse(child => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            color: '#ffffff',
+            roughness: 0.4,
             metalness: 0,
           })
         }
@@ -179,7 +192,8 @@ function WallPanels({ wallId, wallPatternId }) {
   const center = useMemo(() => centerGLB.clone(true), [centerGLB])
   const sides  = useMemo(() => sidesGLB.clone(true), [sidesGLB])
 
-  const matRef = useRef(new THREE.MeshStandardMaterial({ roughness: 0.38, metalness: 0, side: THREE.DoubleSide }))
+  const matRef = useRef(new THREE.MeshStandardMaterial({ roughness: 0.48, metalness: 0.02, side: THREE.DoubleSide }))
+
 
   // ── Wall color ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -607,12 +621,11 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
 
   return (
     <>
-      <Environment preset="warehouse" background={false} environmentIntensity={0.25} />
-      <ambientLight intensity={0.3} color="#ffffff" />
-      <directionalLight position={[0, 5, 2]}  intensity={0.9} color="#fffaf0" />
-      <directionalLight position={[-3, 4, 1]} intensity={0.5} color="#f0f4ff" />
-      <directionalLight position={[3, 4, 1]}  intensity={0.3} color="#f0f4ff" />
-      <directionalLight position={[0, 2, 4]}  intensity={0.4} color="#ffffff" />
+      <Environment preset="warehouse" background={false} environmentIntensity={0.15} />
+      <ambientLight intensity={0.55} color="#ffffff" />
+      <rectAreaLight width={2.2} height={1.8} intensity={5.5} color="#fffaf0" position={[-2.0, 3.5, -0.8]} rotation={[-Math.PI / 2, 0, 0]} />
+      <directionalLight position={[-4, 3, 2]} intensity={0.35} color="#f0f8ff" />
+      <ContactShadows position={[0, 0.01, 0]} opacity={0.65} scale={12} blur={1.8} far={3} frames={1} />
 
       {STATIC_ENV_URLS.map(url => <EnvModel key={url} url={url} />)}
       <EnvModel key={ROOM_WALL_URL} url={ROOM_WALL_URL} visible={showRoomWalls} />
@@ -859,7 +872,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.0,
+          toneMappingExposure: 1.05,
         }}
         style={{
           width: '100%',
