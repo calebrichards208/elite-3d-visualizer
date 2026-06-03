@@ -114,7 +114,7 @@ function EnvModel({ url, visible = true }) {
         if (child.isMesh) {
           const mat = new THREE.MeshStandardMaterial({
             color: '#ffffff',
-            roughness: 0.75,
+            roughness: 0.92,
             metalness: 0,
           })
 
@@ -157,8 +157,8 @@ function EnvModel({ url, visible = true }) {
       cloned.traverse(child => {
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
-            color: '#d9cfc1',
-            roughness: 0.85,
+            color: '#c8c8c8',
+            roughness: 0.92,
             metalness: 0,
           })
         }
@@ -176,19 +176,10 @@ function WallPanels({ wallId, wallPatternId }) {
   const { scene: sidesGLB }  = useGLTF('/models/SHOWER-SURROUND-SIDES-ELITE.glb')
   const { gl }               = useThree()
 
-  const center      = useMemo(() => centerGLB.clone(true), [centerGLB])
-  const sides       = useMemo(() => sidesGLB.clone(true), [sidesGLB])
-  const centerEtch  = useMemo(() => centerGLB.clone(true), [centerGLB])
-  const sidesEtch   = useMemo(() => sidesGLB.clone(true), [sidesGLB])
+  const center = useMemo(() => centerGLB.clone(true), [centerGLB])
+  const sides  = useMemo(() => sidesGLB.clone(true), [sidesGLB])
 
   const matRef = useRef(new THREE.MeshStandardMaterial({ roughness: 0.38, metalness: 0, side: THREE.DoubleSide }))
-  const makeEtchMat = () => new THREE.MeshBasicMaterial({
-    color: '#ffffff', transparent: true, alphaTest: 0.5,
-    depthWrite: false, side: THREE.DoubleSide,
-    polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -4, opacity: 0,
-  })
-  const etchMatCenterRef = useRef(makeEtchMat())
-  const etchMatSidesRef  = useRef(makeEtchMat())
 
   // ── Wall color ────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -239,60 +230,88 @@ function WallPanels({ wallId, wallPatternId }) {
     return () => { cancelled = true }
   }, [wallId, center, sides, gl])
 
-  // ── Etch overlay ──────────────────────────────────────────────────────────
+  // ── Etch pattern (normalMap + emissiveMap on base material) ─────────────
   useEffect(() => {
-    const matC = etchMatCenterRef.current
-    const matS = etchMatSidesRef.current
+    const mat = matRef.current
     let cancelled = false
 
     const clearEtch = () => {
-      matC.alphaMap = null; matC.opacity = 0; matC.needsUpdate = true
-      matS.alphaMap = null; matS.opacity = 0; matS.needsUpdate = true
-      centerEtch.traverse(c => { if (c.isMesh) c.material = matC })
-      sidesEtch.traverse(c  => { if (c.isMesh) c.material = matS })
+      mat.normalMap = null
+      mat.normalScale.set(0, 0)
+      mat.emissiveMap = null
+      mat.emissive.set('#000000')
+      mat.emissiveIntensity = 0
+      mat.roughnessMap = null
+      mat.displacementMap = null
+      mat.displacementScale = 0
+      mat.roughness = 0.38
+      mat.needsUpdate = true
     }
 
     const patternOpt = manifest.categories.wallPattern?.options.find(o => o.id === wallPatternId)
-    if (!patternOpt?.alphaTexture) { clearEtch(); return }
+    if (!patternOpt?.normalTexture) { clearEtch(); return }
 
-    const makeTex = (baseTex, offsetU) => {
-      const t = baseTex.clone()
-      t.wrapS = t.wrapT = THREE.RepeatWrapping
-      t.repeat.set(4, 4)
-      t.offset.set(offsetU, 0)
-      t.anisotropy = gl.capabilities.getMaxAnisotropy()
-      t.minFilter = THREE.LinearMipmapLinearFilter
-      t.magFilter = THREE.LinearFilter
-      t.needsUpdate = true
-      return t
+    const setupTex = (tex) => {
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+      tex.repeat.set(4, 5.3)
+      tex.generateMipmaps = true
+      tex.minFilter = THREE.LinearMipmapLinearFilter
+      tex.magFilter = THREE.LinearFilter
+      tex.anisotropy = gl.capabilities.getMaxAnisotropy()
+      tex.needsUpdate = true
+      return tex
     }
 
-    const applyAlpha = (baseTex) => {
-      if (cancelled) return
-      matC.alphaMap = makeTex(baseTex, 0)
-      matC.opacity = 1; matC.needsUpdate = true
-      matS.alphaMap = makeTex(baseTex, 0.5)
-      matS.opacity = 1; matS.needsUpdate = true
-      centerEtch.traverse(c => { if (c.isMesh) c.material = matC })
-      sidesEtch.traverse(c  => { if (c.isMesh) c.material = matS })
+    const getAdaptiveIntensity = () => {
+      const hex = WALL_HEX[wallId] ?? '#888888'
+      const c = new THREE.Color(hex)
+      const luminance = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b
+      return THREE.MathUtils.lerp(0.75, 0.15, luminance)
     }
 
-    if (patternOpt.alphaTexture.endsWith('.png')) {
-      new THREE.TextureLoader().load(patternOpt.alphaTexture, applyAlpha)
-    } else {
-      loadBasisTexture(patternOpt.alphaTexture, gl).then(applyAlpha)
-        .catch(e => console.warn('[WallPanels] etch alpha failed:', e.message))
-    }
+    const loadAlpha = patternOpt.alphaTexture
+      ? patternOpt.alphaTexture.endsWith('.png')
+        ? new Promise(res => new THREE.TextureLoader().load(patternOpt.alphaTexture, res))
+        : loadBasisTexture(patternOpt.alphaTexture, gl)
+      : Promise.resolve(null)
+
+    Promise.all([loadBasisTexture(patternOpt.normalTexture, gl), loadAlpha])
+      .then(([normalTex, alphaTex]) => {
+        if (cancelled) return
+        mat.roughnessMap = null
+        if (alphaTex) {
+          // Strategy A: alpha present — emissive white lines + displacement depth (no normalMap = no ghosting)
+          mat.normalMap = null
+          mat.normalScale.set(0, 0)
+          mat.emissiveMap = setupTex(alphaTex)
+          mat.emissive.set('#ffffff')
+          mat.emissiveIntensity = getAdaptiveIntensity()
+          mat.displacementMap = setupTex(alphaTex)
+          mat.displacementScale = -0.004
+          mat.displacementBias = 0
+          mat.roughness = 0.6
+        } else {
+          // Strategy B: normal only — same-color dimensional grooves
+          mat.normalMap = setupTex(normalTex)
+          mat.normalScale.set(1.2, -1.2)
+          mat.emissiveMap = null
+          mat.emissive.set('#000000')
+          mat.emissiveIntensity = 0
+          mat.displacementMap = null
+          mat.displacementScale = 0
+          mat.roughness = 0.38
+        }
+        mat.needsUpdate = true
+      })
+      .catch(e => console.warn('[WallPanels] etch load failed:', e.message))
 
     return () => { cancelled = true }
-  }, [wallPatternId, centerEtch, sidesEtch, gl])
+  }, [wallPatternId, wallId, gl])
 
   return (
     <group>
       <primitive object={center} />
       <primitive object={sides} />
-      <primitive object={centerEtch} renderOrder={1} />
-      <primitive object={sidesEtch} renderOrder={1} />
     </group>
   )
 }
@@ -429,7 +448,7 @@ function FoldDownSeat({ visible }) {
   const cloned = useMemo(() => scene.clone(true), [scene])
 
   useEffect(() => {
-    const mat = new THREE.MeshStandardMaterial({ roughness: 0.65, metalness: 0.0 })
+    const mat = new THREE.MeshStandardMaterial({ roughness: 0.92, metalness: 0.0 })
     loadBasisTexture('/textures/MOEN_TEAK_BENCH_Silver_Teak.basis', gl).then(tex => {
       tex.colorSpace = THREE.SRGBColorSpace
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping
@@ -589,11 +608,10 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
   return (
     <>
       <Environment preset="studio" background={false} environmentIntensity={0.3} />
-      <ambientLight intensity={0.4} color="#fff5e8" />
-      <directionalLight position={[0, 5, 3]}  intensity={1.4} color="#ffe9c0" castShadow />
-      <directionalLight position={[4, 3, 2]}  intensity={0.6} color="#ffffff" />
-      <directionalLight position={[-4, 3, 2]} intensity={0.6} color="#ffffff" />
-      <directionalLight position={[0, 3, -3]} intensity={0.3} color="#d0e8ff" />
+      <ambientLight intensity={0.6} color="#ffffff" />
+      <directionalLight position={[0, 5, 3]}  intensity={0.55} color="#ffffff" />
+      <directionalLight position={[-3, 3, 1]} intensity={0.4} color="#ffffff" />
+      <directionalLight position={[3, 3, 1]}  intensity={0.4} color="#ffffff" />
 
       {STATIC_ENV_URLS.map(url => <EnvModel key={url} url={url} />)}
       <EnvModel key={ROOM_WALL_URL} url={ROOM_WALL_URL} visible={showRoomWalls} />
