@@ -157,7 +157,7 @@ function EnvModel({ url, visible = true }) {
       cloned.traverse(child => {
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
-            color: '#c8c8c8',
+            color: '#b8b8b8',
             roughness: 0.92,
             metalness: 0,
           })
@@ -607,11 +607,12 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
 
   return (
     <>
-      <Environment preset="studio" background={false} environmentIntensity={0.3} />
-      <ambientLight intensity={0.6} color="#ffffff" />
-      <directionalLight position={[0, 5, 3]}  intensity={0.55} color="#ffffff" />
-      <directionalLight position={[-3, 3, 1]} intensity={0.4} color="#ffffff" />
-      <directionalLight position={[3, 3, 1]}  intensity={0.4} color="#ffffff" />
+      <Environment preset="warehouse" background={false} environmentIntensity={0.25} />
+      <ambientLight intensity={0.3} color="#ffffff" />
+      <directionalLight position={[0, 5, 2]}  intensity={0.9} color="#fffaf0" />
+      <directionalLight position={[-3, 4, 1]} intensity={0.5} color="#f0f4ff" />
+      <directionalLight position={[3, 4, 1]}  intensity={0.3} color="#f0f4ff" />
+      <directionalLight position={[0, 2, 4]}  intensity={0.4} color="#ffffff" />
 
       {STATIC_ENV_URLS.map(url => <EnvModel key={url} url={url} />)}
       <EnvModel key={ROOM_WALL_URL} url={ROOM_WALL_URL} visible={showRoomWalls} />
@@ -858,7 +859,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.1,
+          toneMappingExposure: 1.0,
         }}
         style={{
           width: '100%',
