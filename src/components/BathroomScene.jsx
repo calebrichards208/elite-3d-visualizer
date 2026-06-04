@@ -1,4 +1,4 @@
-import { Canvas, useThree } from '@react-three/fiber'
+import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { OrbitControls, useGLTF, Html, Environment, ContactShadows, MeshReflectorMaterial } from '@react-three/drei'
 import { loadBasisTexture } from '../utils/loadBasisTexture.js'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
@@ -600,20 +600,46 @@ function FoldDownSeat({ visible }) {
 
 // ─── Camera ───────────────────────────────────────────────────────────────────
 
-function CameraRig({ recenterKey, showerCenter }) {
+function CameraRig({ recenterKey, showerCenter, skipIntro, onPanelReady }) {
   const { camera }  = useThree()
   const controlsRef = useRef()
+  const [animating, setAnimating] = useState(!skipIntro)
+  const targetRef     = useRef(null)
+  const panelFiredRef = useRef(false)
 
   useEffect(() => {
     if (!controlsRef.current) return
     const { x, y, z } = showerCenter
     const mobile = window.innerWidth <= 768
-    camera.position.set(x, y + (mobile ? 0.7 : 1.0), z + (mobile ? 4.4 : 3.0))
+    const tx = x, ty = y + (mobile ? 0.7 : 1.0), tz = z + (mobile ? 4.4 : 3.0)
+    targetRef.current = new THREE.Vector3(tx, ty, tz)
     controlsRef.current.target.set(x, y + (mobile ? 0.0 : 0.3), z)
-    controlsRef.current.update()
-    controlsRef.current.saveState()
+    if (skipIntro) {
+      camera.position.set(tx, ty, tz)
+      controlsRef.current.update()
+      controlsRef.current.saveState()
+    } else {
+      camera.position.set(tx, ty + 1.5, tz + 6)
+      controlsRef.current.update()
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [camera, showerCenter])
+
+  useFrame(() => {
+    if (!animating || !targetRef.current) return
+    camera.position.lerp(targetRef.current, 0.035)
+    const dist = camera.position.distanceTo(targetRef.current)
+    if (!panelFiredRef.current && dist < 3.5) {
+      panelFiredRef.current = true
+      onPanelReady?.()
+    }
+    if (dist < 0.08) {
+      camera.position.copy(targetRef.current)
+      setAnimating(false)
+      sessionStorage.setItem('elite-intro-played', '1')
+      controlsRef.current?.saveState()
+    }
+  })
 
   useEffect(() => {
     if (recenterKey === 0 || !controlsRef.current) return
@@ -623,6 +649,7 @@ function CameraRig({ recenterKey, showerCenter }) {
   return (
     <OrbitControls
       ref={controlsRef}
+      enabled={!animating}
       enablePan={false}
       minPolarAngle={0.1}
       maxPolarAngle={Math.PI / 2}
@@ -716,7 +743,7 @@ function NudgeOverlay({ active, setActive, positions, rotations }) {
 
 // ─── Full scene ───────────────────────────────────────────────────────────────
 
-function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }) {
+function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls, skipIntro, onPanelReady }) {
   const { scene: surroundRef } = useGLTF('/models/SHOWER-SURROUND-CENTER-ELITE.glb')
   const nicheCenter = useMemo(() => {
     const c = new THREE.Box3().setFromObject(surroundRef).getCenter(new THREE.Vector3())
@@ -847,7 +874,7 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
                           visible={selections.base !== 'tub'} />
       </group>
 
-      <CameraRig recenterKey={recenterKey} showerCenter={nicheCenter} />
+      <CameraRig recenterKey={recenterKey} showerCenter={nicheCenter} skipIntro={skipIntro} onPanelReady={onPanelReady} />
     </>
   )
 }
@@ -877,7 +904,8 @@ function LoadingOverlay() {
 
 // ─── Canvas export ────────────────────────────────────────────────────────────
 
-export default function BathroomScene({ selections, recenterKey, showRoomWalls }) {
+export default function BathroomScene({ selections, recenterKey, showRoomWalls, onPanelReady }) {
+  const [skipIntro] = useState(() => !!sessionStorage.getItem('elite-intro-played'))
   const [active, setActive] = useState(null)
   const [showNudge, setShowNudge] = useState(false)
   const [nudges, setNudges] = useState({
@@ -1031,7 +1059,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
         }}
       >
         <Suspense fallback={<LoadingOverlay />}>
-          <SceneContent selections={selections} recenterKey={recenterKey} nudges={nudges} gbRots={gbRots} showRoomWalls={showRoomWalls} />
+          <SceneContent selections={selections} recenterKey={recenterKey} nudges={nudges} gbRots={gbRots} showRoomWalls={showRoomWalls} skipIntro={skipIntro} onPanelReady={onPanelReady} />
         </Suspense>
       </Canvas>
     </>

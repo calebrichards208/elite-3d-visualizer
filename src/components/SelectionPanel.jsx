@@ -25,7 +25,7 @@ const PANEL_HEIGHT_DESKTOP = '55vh'
 const PANEL_HEIGHT_MOBILE  = '52vh'
 const PANEL_WIDTH_DESKTOP  = 380
 
-export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdate }) {
+export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdate, panelReady = true }) {
   const [activeTab, setActiveTab] = useState('walls')
   const [minimized, setMinimized] = useState(false)
   const [, startTransition] = useTransition()
@@ -52,6 +52,11 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
   const currentVal = selections[activeTab] ?? manifest.defaults[activeTab]
 
   // ── Floating toggle button (always rendered) ──────────────────────────────
+  const slideStyle = {
+    transform: panelReady ? undefined : 'translateY(120%)',
+    transition: 'transform 0.75s cubic-bezier(0.16, 1, 0.3, 1)',
+  }
+
   const floatBtn = (
     <button
       onClick={() => startTransition(() => setMinimized(v => !v))}
@@ -71,6 +76,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         transition: 'transform 0.3s ease, bottom 0.3s ease',
         zIndex: 200,
+        opacity: panelReady ? 1 : 0,
       }}
     >⌃</button>
   )
@@ -94,6 +100,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
           padding: '0 16px',
           cursor: 'pointer',
           zIndex: 100,
+          ...slideStyle,
         }} onClick={() => startTransition(() => setMinimized(false))}>
           <span style={{ fontSize: '13px', fontWeight: 600, color: '#111', letterSpacing: '-0.01em' }}>
             Design Options
@@ -119,6 +126,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
         fontFamily: "'Inter', 'SF Pro Text', system-ui, sans-serif",
         userSelect: 'none',
         zIndex: 100,
+        ...slideStyle,
       }}>
 
         {/* ── Main area tabs (folder style) ── */}

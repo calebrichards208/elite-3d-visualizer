@@ -8,6 +8,7 @@ export default function App() {
   const { selections, update } = useSelections()
   const [recenterKey, setRecenterKey]     = useState(0)
   const [showRoomWalls, setShowRoomWalls] = useState(true)
+  const [panelReady, setPanelReady]       = useState(() => !!sessionStorage.getItem('elite-intro-played'))
 
   return (
     <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
@@ -15,10 +16,12 @@ export default function App() {
         selections={selections}
         recenterKey={recenterKey}
         showRoomWalls={showRoomWalls}
+        onPanelReady={() => setPanelReady(true)}
       />
       <SelectionPanel
         selections={selections}
         onUpdate={update}
+        panelReady={panelReady}
       />
     </div>
   )
