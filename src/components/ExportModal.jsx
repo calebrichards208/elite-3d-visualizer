@@ -58,10 +58,11 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
     await new Promise(res => { img.onload = res })
 
     const W = 800
-    const imgH = Math.round(W * img.height / img.width)
-    const PAD = 30
-    const ROW_H = 36
-    const HEADER_H = 58
+    const rawImgH = Math.round(W * img.height / img.width)
+    const imgH = Math.min(rawImgH, Math.round(W * 0.65)) // cap height so text section stays readable
+    const PAD = 36
+    const ROW_H = 42
+    const HEADER_H = 68
     const textH = HEADER_H + rows.length * ROW_H + PAD
 
     const canvas = document.createElement('canvas')
@@ -78,9 +79,9 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
     ctx.fillRect(0, imgH + 3, W, textH)
 
     ctx.fillStyle = '#c9a25a'
-    ctx.font = '700 11px system-ui, sans-serif'
+    ctx.font = '700 14px system-ui, sans-serif'
     ctx.textAlign = 'left'
-    ctx.fillText('ELITE CONSTRUCTION + REMODELING', PAD, imgH + 3 + PAD + 12)
+    ctx.fillText('ELITE CONSTRUCTION + REMODELING', PAD, imgH + 3 + PAD + 16)
 
     ctx.fillStyle = '#f0f0f0'
     ctx.fillRect(PAD, imgH + 3 + HEADER_H - 10, W - PAD * 2, 1)
@@ -88,13 +89,13 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
     rows.forEach(({ label, value }, i) => {
       const y = imgH + 3 + HEADER_H + i * ROW_H + ROW_H * 0.66
       ctx.fillStyle = '#999'
-      ctx.font = '400 13px system-ui, sans-serif'
+      ctx.font = '400 16px system-ui, sans-serif'
       ctx.textAlign = 'left'
       ctx.fillText(label, PAD, y)
       ctx.fillStyle = '#111'
-      ctx.font = '500 13px system-ui, sans-serif'
+      ctx.font = '600 16px system-ui, sans-serif'
       ctx.textAlign = 'left'
-      ctx.fillText(value, 210, y)
+      ctx.fillText(value, 240, y)
       if (i < rows.length - 1) {
         ctx.fillStyle = '#f4f4f4'
         ctx.fillRect(PAD, imgH + 3 + HEADER_H + (i + 1) * ROW_H - 4, W - PAD * 2, 1)
