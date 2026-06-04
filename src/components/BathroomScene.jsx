@@ -608,7 +608,7 @@ function CameraRig({ recenterKey, showerCenter }) {
     if (!controlsRef.current) return
     const { x, y, z } = showerCenter
     const mobile = window.innerWidth <= 768
-    camera.position.set(x, y + (mobile ? 0.7 : 1.0), z + (mobile ? 5.5 : 4))
+    camera.position.set(x, y + (mobile ? 0.7 : 1.0), z + (mobile ? 4.4 : 3.0))
     controlsRef.current.target.set(x, y + (mobile ? 0.0 : 0.3), z)
     controlsRef.current.update()
     controlsRef.current.saveState()
@@ -868,7 +868,7 @@ function LoadingOverlay() {
         <p style={{
           fontFamily: "'Cormorant Garamond', serif",
           fontStyle: 'italic', fontSize: '15px',
-          color: 'rgba(240,237,232,0.5)', letterSpacing: '0.08em',
+          color: '#a07828', letterSpacing: '0.08em',
         }}>Loading…</p>
       </div>
     </Html>

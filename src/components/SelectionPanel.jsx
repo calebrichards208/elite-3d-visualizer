@@ -224,6 +224,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
               const selected = currentVal === opt.id
               const dimmed = (activeTab === 'seat' && selections.base === 'tub' && opt.id !== 'none')
                           || (activeTab === 'baseColor' && selections.base === 'tub' && opt.id === 'match-walls')
+                          || (activeTab === 'showerHead' && selections.base === 'tub' && (opt.id === 'rain-head' || opt.id === 'handheld'))
               return (
                 <button
                   key={opt.id}
