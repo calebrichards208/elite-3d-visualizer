@@ -311,6 +311,7 @@ function WallPanels({ wallId, wallPatternId }) {
       mat.roughnessMap = null
       mat.displacementMap = null
       mat.displacementScale = 0
+      mat.displacementBias = 0
       mat.roughness = 0.38
       mat.needsUpdate = true
     }
@@ -318,9 +319,13 @@ function WallPanels({ wallId, wallPatternId }) {
     const patternOpt = manifest.categories.wallPattern?.options.find(o => o.id === wallPatternId)
     if (!patternOpt?.normalTexture) { clearEtch(); return }
 
+    const [rx, ry] = patternOpt.etchRepeat ?? [4, 5.3]
+    const etchRot = patternOpt.etchRotation ?? 0
     const setupTex = (tex) => {
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping
-      tex.repeat.set(4, 5.3)
+      tex.repeat.set(rx, ry)
+      tex.rotation = etchRot
+      tex.center.set(0.5, 0.5)
       tex.generateMipmaps = true
       tex.minFilter = THREE.LinearMipmapLinearFilter
       tex.magFilter = THREE.LinearFilter
@@ -353,9 +358,8 @@ function WallPanels({ wallId, wallPatternId }) {
           mat.emissiveMap = setupTex(alphaTex)
           mat.emissive.set('#ffffff')
           mat.emissiveIntensity = getAdaptiveIntensity()
-          mat.displacementMap = setupTex(alphaTex)
-          mat.displacementScale = -0.004
-          mat.displacementBias = 0
+          mat.displacementMap = null
+          mat.displacementScale = 0
           mat.roughness = 0.6
         } else {
           // Strategy B: normal only — same-color dimensional grooves

@@ -44,13 +44,12 @@
         { "id": "chevron",    "label": "Chevron",     "thumbnail": "/textures/Impressions Chevron.png",      "normalTexture": "/textures/etch_chevron_normal.basis",    "alphaTexture": "/textures/etch_chevron_alpha.png" },
         { "id": "flagstone",  "label": "Flagstone",   "thumbnail": "/textures/Laser-Etched Flagstone.png",   "normalTexture": "/textures/etch_flagstone_normal.basis",  "alphaTexture": "/textures/etch_flagstone_alpha.basis" },
         { "id": "herringbone","label": "Herringbone", "thumbnail": "/textures/Laser-Etched Herringbone.png", "normalTexture": "/textures/etch_herringbone_normal.basis","alphaTexture": "/textures/etch_herringbone_alpha.basis" },
-        { "id": "hexagon",    "label": "Hexagon",     "thumbnail": "/textures/Laser-Etched Hexagonal.png",   "normalTexture": "/textures/etch_hexagon_normal.basis" },
+        { "id": "hexagon",    "label": "Hexagon",     "thumbnail": "/textures/Laser-Etched Hexagonal.png",   "normalTexture": "/textures/etch_hexagon_normal.basis", "alphaTexture": "/textures/etch_hexagon_alpha.basis", "etchRepeat": [13, 10], "etchRotation": 1.5708 },
         { "id": "hopscotch",  "label": "Hopscotch",   "thumbnail": "/textures/Laser-Etched Hopscotch.png",   "normalTexture": "/textures/etch_hopscotch_normal.basis",  "alphaTexture": "/textures/etch_hopscotch_alpha.basis" },
         { "id": "monument",   "label": "Monument",    "thumbnail": "/textures/Laser-Etched Monument.png",    "normalTexture": "/textures/etch_monument_normal.basis" },
         { "id": "oblong",     "label": "Oblong",      "thumbnail": "/textures/Reveal Laser Etched Oblong Thumb.png", "normalTexture": "/textures/etch_oblong_normal.basis" },
         { "id": "panorama",   "label": "Panorama",    "thumbnail": "/textures/Laser-Etched Panorama.png",    "normalTexture": "/textures/etch_panorama_normal.basis",   "alphaTexture": "/textures/etch_panorama_alpha.basis" },
         { "id": "romanblock", "label": "Roman Block", "thumbnail": "/textures/Laser-Etched Roman Block.png", "normalTexture": "/textures/etch_romanblock_normal.basis", "alphaTexture": "/textures/etch_romanblock_alpha.basis" },
-        { "id": "scalloped",  "label": "Scalloped",   "thumbnail": "/textures/Scalloped.png",                "normalTexture": "/textures/etch_scalloped_normal.basis" },
         { "id": "subway",     "label": "Subway",      "thumbnail": "/textures/Laser-Etched Subway.png",      "normalTexture": "/textures/etch_subway_normal.basis" }
       ]
     },
