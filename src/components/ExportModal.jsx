@@ -130,7 +130,7 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
           background: '#fff',
           borderRadius: 16,
           width: '100%',
-          maxWidth: 400,
+          maxWidth: 520,
           maxHeight: '88vh',
           overflow: 'hidden',
           display: 'flex',
@@ -156,26 +156,26 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
           />
         )}
 
-        <div style={{ padding: '14px 18px 4px', overflowY: 'auto', flex: 1 }}>
+        <div style={{ padding: '16px 22px 8px', overflowY: 'auto', flex: 1 }}>
           <p style={{
-            fontFamily: 'system-ui', fontSize: 10, fontWeight: 700,
-            color: '#c9a25a', letterSpacing: '0.12em', marginBottom: 10,
+            fontFamily: 'system-ui', fontSize: 12, fontWeight: 700,
+            color: '#c9a25a', letterSpacing: '0.12em', marginBottom: 12,
           }}>
             ELITE CONSTRUCTION + REMODELING
           </p>
           {rows.map(({ label, value }) => (
             <div key={label} style={{
               display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
-              padding: '5px 0', borderBottom: '1px solid #f4f4f4',
+              padding: '8px 0', borderBottom: '1px solid #f4f4f4',
             }}>
-              <span style={{ fontSize: 12, color: '#999', fontFamily: 'system-ui' }}>{label}</span>
-              <span style={{ fontSize: 13, fontWeight: 500, color: '#111', fontFamily: 'system-ui', textAlign: 'right', marginLeft: 12 }}>{value}</span>
+              <span style={{ fontSize: 14, color: '#999', fontFamily: 'system-ui' }}>{label}</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: '#111', fontFamily: 'system-ui', marginLeft: 16 }}>{value}</span>
             </div>
           ))}
         </div>
 
         <div style={{
-          display: 'flex', gap: 6, padding: '12px 14px',
+          display: 'flex', gap: 8, padding: '14px 18px',
           borderTop: '1px solid #f0f0f0',
         }}>
           <button onClick={handleSaveImage} className="export-btn" style={btn('#1a1a1a')}>Save Image</button>
@@ -192,8 +192,8 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
 }
 
 const btn = bg => ({
-  flex: 1, padding: '9px 2px', borderRadius: 8, border: 'none',
-  background: bg, color: '#fff', fontSize: 11, fontWeight: 600,
+  flex: 1, padding: '11px 4px', borderRadius: 8, border: 'none',
+  background: bg, color: '#fff', fontSize: 13, fontWeight: 600,
   fontFamily: 'system-ui', cursor: 'pointer',
   transition: 'background 0.15s', letterSpacing: '-0.01em',
 })
