@@ -29,12 +29,18 @@ export function SelectionPanel({ selections, onUpdate }) {
   const [minimized, setMinimized] = useState(false)
   const subScrollRef = useRef(null)
   const activeTabRef = useRef(null)
+  const selectedOptRef = useRef(null)
 
   const mobile = window.innerWidth <= 768
 
   useEffect(() => {
-    if (!minimized && activeTabRef.current) {
-      activeTabRef.current.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' })
+    if (!minimized) {
+      if (activeTabRef.current) {
+        activeTabRef.current.scrollIntoView({ behavior: 'instant', block: 'nearest', inline: 'center' })
+      }
+      if (selectedOptRef.current) {
+        selectedOptRef.current.scrollIntoView({ behavior: 'instant', block: 'nearest' })
+      }
     }
   }, [minimized])
 
@@ -217,6 +223,7 @@ export function SelectionPanel({ selections, onUpdate }) {
               return (
                 <button
                   key={opt.id}
+                  ref={selected ? selectedOptRef : null}
                   onClick={() => onUpdate(activeTab, opt.id)}
                   style={{
                     display: 'flex',

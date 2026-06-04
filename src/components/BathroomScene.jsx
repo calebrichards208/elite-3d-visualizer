@@ -699,7 +699,7 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
     <>
       <Environment preset="warehouse" background={false} environmentIntensity={0.15} />
       <ambientLight intensity={0.55} color="#ffffff" />
-      <rectAreaLight width={2.2} height={1.8} intensity={5.5} color="#fffaf0" position={[-2.0, 3.5, -0.8]} rotation={[-Math.PI / 2, 0, 0]} />
+      <rectAreaLight width={2.2} height={1.8} intensity={3.5} color="#fffaf0" position={[-2.0, 3.5, -0.8]} rotation={[-Math.PI / 2, 0, 0]} />
       <directionalLight position={[-4, 3, 2]} intensity={0.35} color="#f0f8ff" />
       <directionalLight position={[0, 2, 5]}  intensity={0.25} color="#ffffff" castShadow={false} />
       <directionalLight position={[3, 2, 0]}  intensity={0.25} color="#ffffff" castShadow={false} />
