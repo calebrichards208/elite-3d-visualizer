@@ -44,12 +44,12 @@ const WALL_HEX = {
 
 // ─── Hardcoded wet-area positions (found via keyboard positioning tool) ───────
 const SHOWER_WET_POS = [-1.683, 0.000, 1.344]
-const TUB_WET_POS    = [-1.683, 0.000, 1.444]
+const TUB_WET_POS    = [-1.683, 0.000, 1.354]
 const ACC_POS        = [-1.683, 0.000, 1.394]
 const STD_DOOR_POS   = [-1.678, 0.000, 1.364]
 const STD_GLASS_POS  = [-2.028, 1.200, -0.036]
-const TUB_DOOR_POS   = [-1.998, 1.210, -0.006]
-const TUB_PULL_POS   = [-1.978, 1.130, -0.006]
+const TUB_DOOR_POS   = [-1.998, 1.210, -0.096]
+const TUB_PULL_POS   = [-1.978, 1.130, -0.096]
 const DENALI_DOOR_POS = [-1.983, 1.250, -0.006]
 const VALVE_POS         = [-1.883, 0.000, 1.444]
 const STANDARD_HEAD_POS = [-1.883, 0.000, 1.444]
@@ -57,7 +57,7 @@ const RAIN_HEAD_POS     = [-1.883, 0.100, 1.444]
 const HANDHELD_POS      = [-1.883, 0.250, 1.244]
 const TUB_HEAD_POS      = [-1.883, 0.000, 1.444]
 const SEAT_POS          = [-1.683, 0.000,  1.344]
-const FOLD_DOWN_POS     = [-2.633, 0.400, -0.256]
+const FOLD_DOWN_POS     = [-2.623, 0.400, -0.206]
 const DRAIN_POS         = [-1.823, 0.000,  1.474]
 const GRAB_BAR_VERT_POS   = [-2.233, -0.050, 1.544]
 const GRAB_BAR_VERT_EULER = [0.50 * Math.PI, 0.33 * Math.PI, -0.50 * Math.PI]
@@ -461,7 +461,7 @@ function BaseModel({ selection, baseColor, wallId }) {
   return (
     <>
       <primitive object={shower} visible={selection === 'shower'} />
-      <primitive object={tub}    visible={selection === 'tub'} />
+      <primitive object={tub} visible={selection === 'tub'} />
     </>
   )
 }
@@ -647,8 +647,9 @@ const NUDGE_GROUPS = [
   { key: 'base',    label: 'Base'       },
   { key: 'valve',   label: 'Valve'      },
   { key: 'acc',     label: 'Curtain Rod'},
-  { key: 'seat',    label: 'Seats'      },
-  { key: 'head',    label: 'Heads'      },
+  { key: 'seat',     label: 'Seats'      },
+  { key: 'folddown', label: 'Fold Down'  },
+  { key: 'head',     label: 'Heads'      },
   { key: 'gbv',     label: 'GB Back'    },
   { key: 'gbd',     label: 'GB Entry'   },
   { key: 'stddoor', label: 'Std Door'   },
@@ -732,6 +733,7 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
     valve:     add3(VALVE_POS,         nudges.valve),
     acc:       add3(ACC_POS,           nudges.acc),
     seat:      add3(SEAT_POS,          nudges.seat),
+    folddown:  add3(FOLD_DOWN_POS,     nudges.folddown),
     head:      add3(STANDARD_HEAD_POS, nudges.head),
     headRain:  add3(RAIN_HEAD_POS,     nudges.head),
     headHand:  add3(HANDHELD_POS,      nudges.head),
@@ -791,7 +793,7 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
         <LeftSeatModel url="/models/HEXAGONAL-CORNER-SEAT.glb" visible={selections.seat === 'corner'} />
       </group>
 
-      <group position={FOLD_DOWN_POS} rotation={[0, Math.PI / 2, 0]}>
+      <group position={positions.folddown} rotation={[0, Math.PI / 2, 0]}>
         <FoldDownSeat visible={selections.seat === 'fold-down'} />
       </group>
 
@@ -879,7 +881,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
   const [active, setActive] = useState(null)
   const [showNudge, setShowNudge] = useState(false)
   const [nudges, setNudges] = useState({
-    base:[0,0,0], valve:[0,0,0], acc:[0,0,0], seat:[0,0,0],
+    base:[0,0,0], valve:[0,0,0], acc:[0,0,0], seat:[0,0,0], folddown:[0,0,0],
     head:[0,0,0], gbv:[0,0,0], gbd:[0,0,0], stddoor:[0,0,0], tubpull:[0,0,0], drain:[0,0,0], mirror:[0,0,0],
   })
   const eulerToQuat = (e) => {
@@ -984,9 +986,10 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
     base:    add3(basePosRaw,        nudges.base),
     valve:   add3(VALVE_POS,         nudges.valve),
     acc:     add3(ACC_POS,           nudges.acc),
-    seat:    add3(SEAT_POS,          nudges.seat),
-    head:    add3(STANDARD_HEAD_POS, nudges.head),
-    gbv:     add3(GRAB_BAR_VERT_POS, nudges.gbv),
+    seat:     add3(SEAT_POS,          nudges.seat),
+    folddown: add3(FOLD_DOWN_POS,     nudges.folddown),
+    head:     add3(STANDARD_HEAD_POS, nudges.head),
+    gbv:      add3(GRAB_BAR_VERT_POS, nudges.gbv),
     gbd:     add3(GRAB_BAR_DIAG_POS, nudges.gbd),
     stddoor: add3(selections.base === 'tub' ? TUB_DOOR_POS : STD_DOOR_POS,  nudges.stddoor),
     stdglass: add3(selections.base === 'tub' ? TUB_DOOR_POS : STD_GLASS_POS, nudges.stddoor),

@@ -63,12 +63,12 @@
     "baseColor": {
       "label": "Base Color",
       "options": [
+        { "id": "match-walls", "label": "Match Walls", "thumbnail": "/textures/match-walls.svg" },
         { "id": "white",       "label": "White",       "thumbnail": "/textures/White.png" },
         { "id": "almond",      "label": "Almond",      "thumbnail": "/textures/Almond.png" },
         { "id": "biscuit",     "label": "Biscuit",     "thumbnail": "/textures/Biscuit.png" },
         { "id": "gray",        "label": "Gray",        "thumbnail": "/textures/Gray.png" },
-        { "id": "sandbar",     "label": "Sandbar",     "thumbnail": "/textures/Sandbar.png" },
-        { "id": "match-walls", "label": "Match Walls", "thumbnail": "/textures/match-walls.svg" }
+        { "id": "sandbar",     "label": "Sandbar",     "thumbnail": "/textures/Sandbar.png" }
       ]
     },
     "trim": {
