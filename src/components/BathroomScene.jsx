@@ -1,5 +1,5 @@
 import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls, useGLTF, Html, Environment, ContactShadows } from '@react-three/drei'
+import { OrbitControls, useGLTF, Html, Environment, ContactShadows, MeshReflectorMaterial } from '@react-three/drei'
 import { loadBasisTexture } from '../utils/loadBasisTexture.js'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -71,6 +71,8 @@ const STATIC_ENV_URLS = [
   '/models/elite_baseboard.glb',
   '/models/vanity.glb',
   '/models/toilet.glb',
+  '/models/mirror.glb',
+  '/models/frames.glb',
 ]
 const ROOM_WALL_URL = '/models/elite_walls.glb'
 
@@ -174,6 +176,53 @@ function EnvModel({ url, visible = true }) {
             roughness: 0.4,
             metalness: 0,
           })
+        }
+      })
+    } else if (url === '/models/toilet.glb') {
+      cloned.traverse(child => {
+        if (!child.isMesh) return
+        const n = child.name.toLowerCase()
+        if (n.includes('seat') || n.includes('lid')) {
+          child.material = new THREE.MeshStandardMaterial({ color: '#f8f8f6', roughness: 0.35, metalness: 0 })
+        } else {
+          child.material = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.12, metalness: 0.05 })
+        }
+      })
+    } else if (url === '/models/mirror.glb') {
+      cloned.traverse(child => {
+        if (!child.isMesh) return
+        const n = child.name.toLowerCase()
+        const isGlass = n.includes('glass') || n.includes('reflect') || n.includes('pane')
+          || n.includes('mirror') || n.includes('screen') || n === ''
+        if (isGlass) {
+          child.material = new THREE.MeshStandardMaterial({ color: '#b0b8c0', roughness: 0, metalness: 1 })
+        }
+      })
+    } else if (url === '/models/frames.glb') {
+      loadBasisTexture('/textures/basis/frames_Bake1_CyclesBake_COMBINED.basis', gl).then(tex => {
+        tex.colorSpace = THREE.SRGBColorSpace
+        tex.flipY = false
+        tex.needsUpdate = true
+        cloned.traverse(child => {
+          if (!child.isMesh) return
+          const mat = new THREE.MeshStandardMaterial({
+            map: tex,
+            emissiveMap: tex,
+            emissive: new THREE.Color('#ffffff'),
+            emissiveIntensity: 1.0,
+            roughness: 0.8, metalness: 0,
+          })
+          child.material = mat
+        })
+      })
+    } else if (url === '/models/vanity.glb') {
+      cloned.traverse(child => {
+        if (!child.isMesh) return
+        const n = child.name.toLowerCase()
+        if (n.includes('basin') || n.includes('sink') || n.includes('bowl')) {
+          child.material = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.12, metalness: 0.05 })
+        } else {
+          child.material = new THREE.MeshStandardMaterial({ color: '#fcfcfc', roughness: 0.5, metalness: 0 })
         }
       })
     }
@@ -332,9 +381,24 @@ function WallPanels({ wallId, wallPatternId }) {
 
 // ─── Base (shower / tub) ──────────────────────────────────────────────────────
 
+const WHITE_ACRYLIC = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.15, metalness: 0 })
+
 function BaseModel({ selection }) {
   const { scene: shower } = useGLTF('/models/SHOWER-STANDARD.glb')
   const { scene: tub }    = useGLTF('/models/TUB-CLASSIC.glb')
+
+  useEffect(() => {
+    ;[shower, tub].forEach(scene => {
+      scene.traverse(child => {
+        if (!child.isMesh) return
+        const n = child.name.toLowerCase()
+        if (n.includes('pan') || n.includes('tray') || n.includes('base') || n.includes('floor') || n.includes('shower_base')) {
+          child.material = WHITE_ACRYLIC
+        }
+      })
+    })
+  }, [shower, tub])
+
   return (
     <>
       <primitive object={shower} visible={selection === 'shower'} />
@@ -625,6 +689,8 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
       <ambientLight intensity={0.55} color="#ffffff" />
       <rectAreaLight width={2.2} height={1.8} intensity={5.5} color="#fffaf0" position={[-2.0, 3.5, -0.8]} rotation={[-Math.PI / 2, 0, 0]} />
       <directionalLight position={[-4, 3, 2]} intensity={0.35} color="#f0f8ff" />
+      <directionalLight position={[0, 2, 5]}  intensity={0.25} color="#ffffff" castShadow={false} />
+      <directionalLight position={[3, 2, 0]}  intensity={0.25} color="#ffffff" castShadow={false} />
       <ContactShadows position={[0, 0.01, 0]} opacity={0.65} scale={12} blur={1.8} far={3} frames={1} />
 
       {STATIC_ENV_URLS.map(url => <EnvModel key={url} url={url} />)}
