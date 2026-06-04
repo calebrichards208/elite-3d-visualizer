@@ -72,7 +72,7 @@ const STATIC_ENV_URLS = [
   '/models/vanity.glb',
   '/models/toilet.glb',
   '/models/mirror.glb',
-  '/models/frames.glb',
+  '/models/mirror_frame.glb',
 ]
 const ROOM_WALL_URL = '/models/elite_walls.glb'
 
@@ -188,33 +188,15 @@ function EnvModel({ url, visible = true }) {
           child.material = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.12, metalness: 0.05 })
         }
       })
-    } else if (url === '/models/mirror.glb') {
+    } else if (url === '/models/mirror_frame.glb') {
       cloned.traverse(child => {
         if (!child.isMesh) return
-        const n = child.name.toLowerCase()
-        const isGlass = n.includes('glass') || n.includes('reflect') || n.includes('pane')
-          || n.includes('mirror') || n.includes('screen') || n === ''
-        if (isGlass) {
-          child.material = new THREE.MeshStandardMaterial({ color: '#b0b8c0', roughness: 0, metalness: 1 })
-        }
-      })
-    } else if (url === '/models/frames.glb') {
-      loadBasisTexture('/textures/basis/frames_Bake1_CyclesBake_COMBINED.basis', gl).then(tex => {
-        tex.colorSpace = THREE.SRGBColorSpace
-        tex.flipY = false
-        tex.needsUpdate = true
-        cloned.traverse(child => {
-          if (!child.isMesh) return
-          const mat = new THREE.MeshStandardMaterial({
-            map: tex,
-            emissiveMap: tex,
-            emissive: new THREE.Color('#ffffff'),
-            emissiveIntensity: 1.0,
-            roughness: 0.8, metalness: 0,
-          })
-          child.material = mat
+        child.material = new THREE.MeshStandardMaterial({
+          color: '#3d2b1a', roughness: 0.85, metalness: 0,
         })
       })
+    } else if (url === '/models/mirror.glb') {
+      // Keep frame visible as-is; MirrorReflector places the glass separately
     } else if (url === '/models/vanity.glb') {
       cloned.traverse(child => {
         if (!child.isMesh) return
@@ -229,6 +211,28 @@ function EnvModel({ url, visible = true }) {
   }, [cloned, gl, url])
 
   return <primitive object={cloned} visible={visible} />
+}
+
+// ─── Mirror reflector ────────────────────────────────────────────────────────
+
+// Position/size tuned to sit inside the mirror frame — adjust if needed
+const MIRROR_POS  = [-3.970, 1.650, 1.450]
+const MIRROR_SIZE = [1.20, 0.67]
+
+function MirrorReflector({ position = MIRROR_POS }) {
+  return (
+    <mesh position={position} rotation={[0, Math.PI / 2, 0]}>
+      <planeGeometry args={MIRROR_SIZE} />
+      <MeshReflectorMaterial
+        resolution={512}
+        mirror={1}
+        mixBlur={0}
+        mixStrength={1}
+        roughness={0}
+        color="#c8ccd0"
+      />
+    </mesh>
+  )
 }
 
 // ─── Wall panels ─────────────────────────────────────────────────────────────
@@ -594,6 +598,7 @@ const NUDGE_GROUPS = [
   { key: 'gbd',     label: 'GB Entry'   },
   { key: 'stddoor', label: 'Std Door'   },
   { key: 'drain',   label: 'Drain'      },
+  { key: 'mirror',  label: 'Mirror'     },
 ]
 
 function NudgeOverlay({ active, setActive, positions, rotations }) {
@@ -680,6 +685,7 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
     stddoor:   add3(STD_DOOR_POS,      nudges.stddoor),
     stdglass:  add3(STD_GLASS_POS,     nudges.stddoor),
     drain:     add3(DRAIN_POS,         nudges.drain),
+    mirror:    add3(MIRROR_POS,        nudges.mirror),
   }
   const rotations = gbRots
 
@@ -695,6 +701,7 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
 
       {STATIC_ENV_URLS.map(url => <EnvModel key={url} url={url} />)}
       <EnvModel key={ROOM_WALL_URL} url={ROOM_WALL_URL} visible={showRoomWalls} />
+      <MirrorReflector position={positions.mirror} />
 
       <WallPanels wallId={selections.walls ?? selections.wallColor} wallPatternId={selections.wallPattern} />
 
@@ -803,7 +810,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
   const [showNudge, setShowNudge] = useState(false)
   const [nudges, setNudges] = useState({
     base:[0,0,0], valve:[0,0,0], acc:[0,0,0], seat:[0,0,0],
-    head:[0,0,0], gbv:[0,0,0], gbd:[0,0,0], stddoor:[0,0,0], drain:[0,0,0],
+    head:[0,0,0], gbv:[0,0,0], gbd:[0,0,0], stddoor:[0,0,0], drain:[0,0,0], mirror:[0,0,0],
   })
   const eulerToQuat = (e) => {
     const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(...e))
@@ -889,6 +896,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
           `SHOWER_WET_POS:      ${fmt3(add3(SHOWER_WET_POS,     n.base))}`,
           `TUB_WET_POS:         ${fmt3(add3(TUB_WET_POS,        n.base))}`,
           `DRAIN_POS:           ${fmt3(add3(DRAIN_POS,           n.drain))}`,
+          `MIRROR_POS:          ${fmt3(add3(MIRROR_POS,          n.mirror))}`,
         ].join('\n')
         navigator.clipboard.writeText(lines).then(() => {
           console.log('Copied to clipboard:\n' + lines)
@@ -913,6 +921,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
     stddoor: add3(STD_DOOR_POS,      nudges.stddoor),
     stdglass: add3(STD_GLASS_POS,    nudges.stddoor),
     drain:   add3(DRAIN_POS,         nudges.drain),
+    mirror:  add3(MIRROR_POS,        nudges.mirror),
   }
 
   return (
