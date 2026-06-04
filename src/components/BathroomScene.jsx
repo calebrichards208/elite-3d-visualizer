@@ -1,5 +1,5 @@
 import { Canvas, useThree, useFrame } from '@react-three/fiber'
-import { OrbitControls, useGLTF, Html, Environment, ContactShadows, MeshReflectorMaterial } from '@react-three/drei'
+import { OrbitControls, useGLTF, Environment, ContactShadows, MeshReflectorMaterial } from '@react-three/drei'
 import { loadBasisTexture } from '../utils/loadBasisTexture.js'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -883,29 +883,38 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls, 
 
 function LoadingOverlay() {
   return (
-    <Html center>
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px' }}>
-        <div style={{
-          width: '34px', height: '34px',
-          border: '2px solid rgba(201,162,90,0.2)',
-          borderTop: '2px solid #c9a25a',
-          borderRadius: '50%',
-          animation: 'spin 0.9s linear infinite',
-        }} />
-        <p style={{
-          fontFamily: "'Cormorant Garamond', serif",
-          fontStyle: 'italic', fontSize: '15px',
-          color: '#a07828', letterSpacing: '0.08em',
-        }}>Loading…</p>
-      </div>
-    </Html>
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 50,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      pointerEvents: 'none',
+    }}>
+      <div style={{
+        width: '34px', height: '34px',
+        border: '2px solid rgba(201,162,90,0.2)',
+        borderTop: '2px solid #c9a25a',
+        borderRadius: '50%',
+        animation: 'spin 0.9s linear infinite',
+      }} />
+    </div>
   )
+}
+
+function SceneLoaded({ onLoad }) {
+  useEffect(() => { onLoad?.() }, [onLoad])
+  return null
 }
 
 // ─── Canvas export ────────────────────────────────────────────────────────────
 
-export default function BathroomScene({ selections, recenterKey, showRoomWalls, onPanelReady }) {
+function ScreenshotCapture({ glRef }) {
+  const { gl } = useThree()
+  useEffect(() => { glRef.current = gl }, [gl, glRef])
+  return null
+}
+
+export default function BathroomScene({ selections, recenterKey, showRoomWalls, onPanelReady, glRef }) {
   const [skipIntro] = useState(() => !!sessionStorage.getItem('elite-intro-played'))
+  const [isLoaded, setIsLoaded] = useState(false)
   const [active, setActive] = useState(null)
   const [showNudge, setShowNudge] = useState(false)
   const [nudges, setNudges] = useState({
@@ -1029,15 +1038,17 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls, 
   return (
     <>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      {!isLoaded && <LoadingOverlay />}
       <button
         onClick={() => setShowNudge(v => !v)}
         title="Toggle nudge tool"
         style={{
           position: 'fixed', top: 16, left: 16, zIndex: 101,
           width: 28, height: 28, borderRadius: '50%', border: 'none',
-          background: showNudge ? 'rgba(201,162,90,0.9)' : 'rgba(255,255,255,0.08)',
-          color: showNudge ? '#0a0b0f' : 'rgba(255,255,255,0.3)',
-          cursor: 'pointer', fontSize: '14px', lineHeight: 1,
+          background: showNudge ? 'rgba(201,162,90,0.9)' : 'transparent',
+          color: showNudge ? '#0a0b0f' : 'transparent',
+          cursor: showNudge ? 'pointer' : 'default',
+          fontSize: '14px', lineHeight: 1,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}
       >⚙</button>
@@ -1050,6 +1061,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls, 
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
           toneMappingExposure: 1.05,
+          preserveDrawingBuffer: true,
         }}
         style={{
           width: '100%',
@@ -1058,8 +1070,10 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls, 
           backgroundImage: 'var(--grid-pattern)',
         }}
       >
-        <Suspense fallback={<LoadingOverlay />}>
+        <ScreenshotCapture glRef={glRef ?? { current: null }} />
+        <Suspense fallback={null}>
           <SceneContent selections={selections} recenterKey={recenterKey} nudges={nudges} gbRots={gbRots} showRoomWalls={showRoomWalls} skipIntro={skipIntro} onPanelReady={onPanelReady} />
+          <SceneLoaded onLoad={() => setIsLoaded(true)} />
         </Suspense>
       </Canvas>
     </>

@@ -12,6 +12,21 @@ html, body, #root {
   overflow: hidden;
 }
 
+.export-btn {
+  transition: opacity 0.1s ease, transform 0.1s ease !important;
+}
+.export-btn:hover {
+  opacity: 0.82;
+  transform: translateY(-1px);
+}
+.export-close {
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+.export-close:hover {
+  transform: scale(1.15);
+  box-shadow: 0 3px 12px rgba(0,0,0,0.25) !important;
+}
+
 :root {
   --bg-scene: linear-gradient(135deg, #1a2f4a 0%, #0f1e2e 100%);
   --grid-pattern:

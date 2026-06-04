@@ -4,12 +4,22 @@ import manifest from '../data/products-manifest.json'
 const LS_KEY = 'elite-3d-selections'
 
 export function useSelections() {
-  const [selections, setSelections] = useState(manifest.defaults)
-
-  useEffect(() => {
+  const [selections, setSelections] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    const encoded = params.get('d')
+    if (encoded) {
+      try { return { ...manifest.defaults, ...JSON.parse(atob(encoded)) } } catch {}
+    }
     const stored = localStorage.getItem(LS_KEY)
     if (stored) {
-      setSelections(JSON.parse(stored))
+      try { return { ...manifest.defaults, ...JSON.parse(stored) } } catch {}
+    }
+    return manifest.defaults
+  })
+
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get('d')) {
+      window.history.replaceState({}, '', window.location.pathname)
     }
   }, [])
 

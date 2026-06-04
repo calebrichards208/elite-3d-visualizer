@@ -57,7 +57,7 @@
       "label": "Base Type",
       "options": [
         { "id": "shower", "label": "Shower",         "thumbnail": "/textures/Shower Base.png", "model": "/models/SHOWER-STANDARD.glb" },
-        { "id": "tub",    "label": "Tub Conversion", "thumbnail": "/textures/Classic.png",     "model": "/models/TUB-CLASSIC.glb" }
+        { "id": "tub",    "label": "Tub",             "thumbnail": "/textures/Classic.png",     "model": "/models/TUB-CLASSIC.glb" }
       ]
     },
     "baseColor": {
@@ -92,8 +92,8 @@
       "label": "Enclosure",
       "options": [
         { "id": "curtain-rod",      "label": "Curtain Rod",   "thumbnail": "/textures/Curtain Rod.png" },
-        { "id": "clear-glass-door", "label": "Clear Glass",   "thumbnail": "/textures/clear-glass.jpg" },
-        { "id": "rain-glass-door",  "label": "Privacy Glass", "thumbnail": "/textures/Rain Glass Thumb.png" }
+        { "id": "clear-glass-door", "label": "Clear Glass Door",   "thumbnail": "/textures/clear-glass.jpg" },
+        { "id": "rain-glass-door",  "label": "Privacy Glass Door", "thumbnail": "/textures/Rain Glass Thumb.png" }
       ]
     },
     "seat": {
