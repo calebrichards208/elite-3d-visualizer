@@ -150,7 +150,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
                   border: 'none',
                   borderRadius: isActive ? '10px 10px 0 0' : '8px 8px 0 0',
                   background: isActive ? '#ffffff' : tab.enabled ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.25)',
-                  fontSize: isActive ? '15px' : '13px',
+                  fontSize: isActive ? '18px' : '14px',
                   fontWeight: isActive ? 700 : 500,
                   color: isActive ? '#111' : tab.enabled ? '#666' : '#bbb',
                   cursor: tab.enabled ? 'pointer' : 'default',
@@ -169,7 +169,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
         {/* ── Sub-tabs ── */}
         <div style={{ padding: '10px 16px 0', background: '#fff', flexShrink: 0 }}>
           <div style={{
-            fontSize: '10px', fontWeight: 700, color: '#999',
+            fontSize: '11px', fontWeight: 700, color: '#999',
             letterSpacing: '0.1em', marginBottom: '8px',
           }}>
             BROWSE OPTIONS
@@ -196,7 +196,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
                     border: active ? '1.5px solid #111' : '1.5px solid #e0e0e0',
                     background: active ? '#111' : '#fff',
                     color: active ? '#fff' : '#555',
-                    fontSize: '13px',
+                    fontSize: '16px',
                     fontWeight: active ? 600 : 500,
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
@@ -268,7 +268,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
                     />
                   )}
                   <span style={{
-                    fontSize: '13px',
+                    fontSize: '14px',
                     fontWeight: selected ? 600 : 500,
                     color: selected ? '#c9a25a' : '#444',
                     lineHeight: 1.3,

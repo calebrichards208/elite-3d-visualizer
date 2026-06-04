@@ -24,6 +24,7 @@ function getLabel(key, value, selections) {
 
 export function ExportModal({ selections, screenshotUrl, onClose }) {
   const [copied, setCopied] = useState(null)
+  const mobile = window.innerWidth <= 768
 
   useEffect(() => {
     const onKey = e => { if (e.key === 'Escape') onClose() }
@@ -131,7 +132,7 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
           borderRadius: 16,
           width: '100%',
           maxWidth: 520,
-          maxHeight: '88vh',
+          maxHeight: '94vh',
           overflow: 'hidden',
           display: 'flex',
           flexDirection: 'column',
@@ -140,10 +141,10 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
       >
         <button onClick={onClose} className="export-close" style={{
           position: 'absolute', top: 10, right: 10,
-          width: 26, height: 26, borderRadius: '50%', border: 'none',
+          width: mobile ? 34 : 28, height: mobile ? 34 : 28, borderRadius: '50%', border: 'none',
           background: '#fff', color: '#e53e3e',
-          boxShadow: '0 1px 6px rgba(0,0,0,0.15)',
-          fontSize: 13, fontWeight: 700, lineHeight: 1,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+          fontSize: mobile ? 16 : 13, fontWeight: 700, lineHeight: 1,
           cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
           zIndex: 1,
         }}>✕</button>
@@ -152,11 +153,17 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
           <img
             src={screenshotUrl}
             alt="Bath design"
-            style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', display: 'block' }}
+            style={{ width: '100%', aspectRatio: mobile ? '16/9' : '4/3', objectFit: 'cover', display: 'block' }}
           />
         )}
 
-        <div style={{ padding: '16px 22px 8px', overflowY: 'auto', flex: 1 }}>
+        <div style={{ position: 'relative', flex: 1, overflow: 'hidden' }}>
+          <div style={{
+            position: 'absolute', bottom: 0, left: 0, right: 0, height: 40, zIndex: 1,
+            background: 'linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.98))',
+            pointerEvents: 'none',
+          }} />
+        <div style={{ padding: '16px 22px 8px', overflowY: 'auto', height: '100%' }}>
           <p style={{
             fontFamily: 'system-ui', fontSize: 12, fontWeight: 700,
             color: '#c9a25a', letterSpacing: '0.12em', marginBottom: 12,
@@ -173,16 +180,17 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
             </div>
           ))}
         </div>
+        </div>
 
         <div style={{
           display: 'flex', gap: 8, padding: '14px 18px',
           borderTop: '1px solid #f0f0f0',
         }}>
-          <button onClick={handleSaveImage} className="export-btn" style={btn('#1a1a1a')}>Save Image</button>
-          <button onClick={() => handleCopy('summary', summaryText)} className="export-btn" style={btn(copied === 'summary' ? '#2a7a4a' : '#c9a25a')}>
+          <button onClick={handleSaveImage} className="export-btn" style={btn('#1a1a1a', mobile)}>Save Card</button>
+          <button onClick={() => handleCopy('summary', summaryText)} className="export-btn" style={btn(copied === 'summary' ? '#2a7a4a' : '#c9a25a', mobile)}>
             {copied === 'summary' ? 'Copied ✓' : 'Copy Summary'}
           </button>
-          <button onClick={handleCopyLink} className="export-btn" style={btn(copied === 'link' ? '#2a7a4a' : '#666')}>
+          <button onClick={handleCopyLink} className="export-btn" style={btn(copied === 'link' ? '#2a7a4a' : '#666', mobile)}>
             {copied === 'link' ? 'Copied ✓' : 'Copy Link'}
           </button>
         </div>
@@ -191,9 +199,9 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
   )
 }
 
-const btn = bg => ({
-  flex: 1, padding: '11px 4px', borderRadius: 8, border: 'none',
-  background: bg, color: '#fff', fontSize: 13, fontWeight: 600,
-  fontFamily: 'system-ui', cursor: 'pointer',
+const btn = (bg, mobile) => ({
+  flex: 1, padding: mobile ? '9px 2px' : '11px 4px', borderRadius: 8, border: 'none',
+  background: bg, color: '#fff', fontSize: mobile ? 11 : 13, fontWeight: 600,
+  fontFamily: 'system-ui', cursor: 'pointer', whiteSpace: 'nowrap',
   transition: 'background 0.15s', letterSpacing: '-0.01em',
 })
