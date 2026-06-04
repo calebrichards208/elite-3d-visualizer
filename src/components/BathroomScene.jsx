@@ -321,11 +321,13 @@ function WallPanels({ wallId, wallPatternId }) {
 
     const [rx, ry] = patternOpt.etchRepeat ?? [4, 5.3]
     const etchRot = patternOpt.etchRotation ?? 0
+    const [ox, oy] = patternOpt.etchOffset ?? [0, 0]
     const setupTex = (tex) => {
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping
       tex.repeat.set(rx, ry)
       tex.rotation = etchRot
       tex.center.set(0.5, 0.5)
+      tex.offset.set(ox, oy)
       tex.generateMipmaps = true
       tex.minFilter = THREE.LinearMipmapLinearFilter
       tex.magFilter = THREE.LinearFilter
@@ -338,7 +340,7 @@ function WallPanels({ wallId, wallPatternId }) {
       const hex = WALL_HEX[wallId] ?? '#888888'
       const c = new THREE.Color(hex)
       const luminance = 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b
-      return THREE.MathUtils.lerp(0.75, 0.15, luminance)
+      return THREE.MathUtils.lerp(0.45, 0.08, luminance)
     }
 
     const loadAlpha = patternOpt.alphaTexture

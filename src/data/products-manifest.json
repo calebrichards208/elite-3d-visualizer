@@ -40,17 +40,17 @@
       "label": "Wall Pattern",
       "options": [
         { "id": "none",       "label": "Smooth",      "thumbnail": "/textures/Smooth.png" },
-        { "id": "bayview",    "label": "Bayview",     "thumbnail": "/textures/Laser-Etched Bayview.png",     "normalTexture": "/textures/etch_bayview_normal.basis",    "alphaTexture": "/textures/etch_bayview_alpha.basis" },
-        { "id": "chevron",    "label": "Chevron",     "thumbnail": "/textures/Impressions Chevron.png",      "normalTexture": "/textures/etch_chevron_normal.basis",    "alphaTexture": "/textures/etch_chevron_alpha.png" },
-        { "id": "flagstone",  "label": "Flagstone",   "thumbnail": "/textures/Laser-Etched Flagstone.png",   "normalTexture": "/textures/etch_flagstone_normal.basis",  "alphaTexture": "/textures/etch_flagstone_alpha.basis" },
-        { "id": "herringbone","label": "Herringbone", "thumbnail": "/textures/Laser-Etched Herringbone.png", "normalTexture": "/textures/etch_herringbone_normal.basis","alphaTexture": "/textures/etch_herringbone_alpha.basis" },
+        { "id": "bayview",    "label": "Bayview",     "thumbnail": "/textures/Laser-Etched Bayview.png",     "normalTexture": "/textures/etch_bayview_normal.basis",    "alphaTexture": "/textures/etch_bayview_alpha.basis", "etchRepeat": [1.8, 3.0] },
+        { "id": "chevron",    "label": "Chevron",     "thumbnail": "/textures/Impressions Chevron.png",      "normalTexture": "/textures/etch_chevron_normal.basis",    "alphaTexture": "/textures/etch_chevron_alpha.png", "etchRepeat": [3.4, 4.6] },
+        { "id": "flagstone",  "label": "Flagstone",   "thumbnail": "/textures/Laser-Etched Flagstone.png",   "normalTexture": "/textures/etch_flagstone_normal.basis",  "alphaTexture": "/textures/etch_flagstone_alpha.basis", "etchRepeat": [0.60, 2], "etchRotation": 3.14159, "etchOffset": [0, 4] },
+        { "id": "herringbone","label": "Herringbone", "thumbnail": "/textures/Laser-Etched Herringbone.png", "normalTexture": "/textures/etch_herringbone_normal.basis","alphaTexture": "/textures/etch_herringbone_alpha.basis", "etchRepeat": [3.2, 6.4] },
         { "id": "hexagon",    "label": "Hexagon",     "thumbnail": "/textures/Laser-Etched Hexagonal.png",   "normalTexture": "/textures/etch_hexagon_normal.basis", "alphaTexture": "/textures/etch_hexagon_alpha.basis", "etchRepeat": [13, 10], "etchRotation": 1.5708 },
-        { "id": "hopscotch",  "label": "Hopscotch",   "thumbnail": "/textures/Laser-Etched Hopscotch.png",   "normalTexture": "/textures/etch_hopscotch_normal.basis",  "alphaTexture": "/textures/etch_hopscotch_alpha.basis" },
-        { "id": "monument",   "label": "Monument",    "thumbnail": "/textures/Laser-Etched Monument.png",    "normalTexture": "/textures/etch_monument_normal.basis" },
-        { "id": "oblong",     "label": "Oblong",      "thumbnail": "/textures/Reveal Laser Etched Oblong Thumb.png", "normalTexture": "/textures/etch_oblong_normal.basis" },
-        { "id": "panorama",   "label": "Panorama",    "thumbnail": "/textures/Laser-Etched Panorama.png",    "normalTexture": "/textures/etch_panorama_normal.basis",   "alphaTexture": "/textures/etch_panorama_alpha.basis" },
-        { "id": "romanblock", "label": "Roman Block", "thumbnail": "/textures/Laser-Etched Roman Block.png", "normalTexture": "/textures/etch_romanblock_normal.basis", "alphaTexture": "/textures/etch_romanblock_alpha.basis" },
-        { "id": "subway",     "label": "Subway",      "thumbnail": "/textures/Laser-Etched Subway.png",      "normalTexture": "/textures/etch_subway_normal.basis" }
+        { "id": "hopscotch",  "label": "Hopscotch",   "thumbnail": "/textures/Laser-Etched Hopscotch.png",   "normalTexture": "/textures/etch_hopscotch_normal.basis",  "alphaTexture": "/textures/etch_hopscotch_alpha.basis", "etchRepeat": [3.6, 3.4] },
+        { "id": "monument",   "label": "Monument",    "thumbnail": "/textures/Laser-Etched Monument.png",    "normalTexture": "/textures/etch_monument_normal.basis", "alphaTexture": "/textures/etch_monument_alpha.basis", "etchRepeat": [1.4, 3.05] },
+        { "id": "oblong",     "label": "Oblong",      "thumbnail": "/textures/Reveal Laser Etched Oblong Thumb.png", "normalTexture": "/textures/etch_oblong_normal.basis", "alphaTexture": "/textures/etch_oblong_alpha.basis", "etchRepeat": [8, 8] },
+        { "id": "panorama",   "label": "Panorama",    "thumbnail": "/textures/Laser-Etched Panorama.png",    "normalTexture": "/textures/etch_panorama_normal.basis",   "alphaTexture": "/textures/etch_panorama_alpha.basis", "etchRepeat": [6.5, 7.5] },
+        { "id": "romanblock", "label": "Roman Block", "thumbnail": "/textures/Laser-Etched Roman Block.png", "normalTexture": "/textures/etch_romanblock_normal.basis", "alphaTexture": "/textures/etch_romanblock_alpha.basis", "etchRepeat": [2.5, 1.5], "etchRotation": 1.5708 },
+        { "id": "subway",     "label": "Subway",      "thumbnail": "/textures/Laser-Etched Subway.png",      "normalTexture": "/textures/etch_subway_normal.basis", "alphaTexture": "/textures/etch_subway_alpha.basis", "etchRepeat": [4.75, 2], "etchRotation": 1.5708 }
       ]
     },
     "base": {
