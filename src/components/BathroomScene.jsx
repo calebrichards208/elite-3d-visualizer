@@ -400,11 +400,7 @@ function BaseModel({ selection }) {
   useEffect(() => {
     ;[shower, tub].forEach(scene => {
       scene.traverse(child => {
-        if (!child.isMesh) return
-        const n = child.name.toLowerCase()
-        if (n.includes('pan') || n.includes('tray') || n.includes('base') || n.includes('floor') || n.includes('shower_base')) {
-          child.material = WHITE_ACRYLIC
-        }
+        if (child.isMesh) child.material = WHITE_ACRYLIC
       })
     })
   }, [shower, tub])
