@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useTransition, useMemo, memo } from 'react'
 import manifest from '../data/products-manifest.json'
 
 const MAIN_TABS = [
@@ -24,14 +24,15 @@ const PANEL_HEIGHT_DESKTOP = '55vh'
 const PANEL_HEIGHT_MOBILE  = '52vh'
 const PANEL_WIDTH_DESKTOP  = 380
 
-export function SelectionPanel({ selections, onUpdate }) {
+export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdate }) {
   const [activeTab, setActiveTab] = useState('walls')
   const [minimized, setMinimized] = useState(false)
+  const [, startTransition] = useTransition()
   const subScrollRef = useRef(null)
   const activeTabRef = useRef(null)
   const selectedOptRef = useRef(null)
 
-  const mobile = window.innerWidth <= 768
+  const mobile = useMemo(() => window.innerWidth <= 768, [])
 
   useEffect(() => {
     if (!minimized) {
@@ -52,7 +53,7 @@ export function SelectionPanel({ selections, onUpdate }) {
   // ── Floating toggle button (always rendered) ──────────────────────────────
   const floatBtn = (
     <button
-      onClick={() => setMinimized(v => !v)}
+      onClick={() => startTransition(() => setMinimized(v => !v))}
       style={{
         position: 'fixed',
         ...(mobile
@@ -92,7 +93,7 @@ export function SelectionPanel({ selections, onUpdate }) {
           padding: '0 16px',
           cursor: 'pointer',
           zIndex: 100,
-        }} onClick={() => setMinimized(false)}>
+        }} onClick={() => startTransition(() => setMinimized(false))}>
           <span style={{ fontSize: '13px', fontWeight: 600, color: '#111', letterSpacing: '-0.01em' }}>
             Design Options
           </span>
@@ -268,4 +269,4 @@ export function SelectionPanel({ selections, onUpdate }) {
       </div>
     </>
   )
-}
+})

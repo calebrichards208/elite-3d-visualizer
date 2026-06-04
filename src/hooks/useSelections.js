@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import manifest from '../data/products-manifest.json'
 
 const LS_KEY = 'elite-3d-selections'
@@ -13,13 +13,13 @@ export function useSelections() {
     }
   }, [])
 
-  const update = (key, value) => {
+  const update = useCallback((key, value) => {
     setSelections(prev => {
       const next = { ...prev, [key]: value }
       localStorage.setItem(LS_KEY, JSON.stringify(next))
       return next
     })
-  }
+  }, [])
 
   return { selections, update }
 }
