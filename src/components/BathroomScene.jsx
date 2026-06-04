@@ -14,9 +14,7 @@ const TRIM_PROPS = {
   'chrome':             { color: '#d4d4d4', metalness: 1.0, roughness: 0.05 },
   'brushed-nickel':     { color: '#a8a8ae', metalness: 0.9, roughness: 0.30 },
   'matte-black':        { color: '#1a1a1a', metalness: 0.5, roughness: 0.80 },
-  'brushed-gold':       { color: '#c8a44a', metalness: 1.0, roughness: 0.25 },
   'oil-rubbed-bronze':  { color: '#3a1c0c', metalness: 0.6, roughness: 0.55 },
-  'stainless':          { color: '#c4c4c4', metalness: 1.0, roughness: 0.20 },
 }
 
 // ─── Hex fallback colors for solid wall options ───────────────────────────────
@@ -48,8 +46,10 @@ const WALL_HEX = {
 const SHOWER_WET_POS = [-1.683, 0.000, 1.344]
 const TUB_WET_POS    = [-1.683, 0.000, 1.444]
 const ACC_POS        = [-1.683, 0.000, 1.394]
-const STD_DOOR_POS   = [-1.683, 0.000, 1.394]
-const STD_GLASS_POS  = [-2.033, 1.200, -0.006]
+const STD_DOOR_POS   = [-1.678, 0.000, 1.364]
+const STD_GLASS_POS  = [-2.028, 1.200, -0.036]
+const TUB_DOOR_POS   = [-1.998, 1.210, -0.006]
+const TUB_PULL_POS   = [-1.978, 1.130, -0.006]
 const DENALI_DOOR_POS = [-1.983, 1.250, -0.006]
 const VALVE_POS         = [-1.883, 0.000, 1.444]
 const STANDARD_HEAD_POS = [-1.883, 0.000, 1.444]
@@ -92,6 +92,9 @@ const PRELOAD_URLS = [
   '/models/SHOWER-ROD-CURVED.glb',
   '/models/SHOWER-DOOR-STD.glb',
   '/models/SH-STD-GLASS.glb',
+  '/models/TB-GE-ENCLOSURE.glb',
+  '/models/TB-STD-GLASS.glb',
+  '/models/SD-Horizontal_Ladder_Pulls.glb',
   '/models/SHOWER-DRAIN.glb',
   '/models/BENCH-SHOWER-SEAT.glb',
   '/models/MOEN_BENCH_2.glb',
@@ -392,19 +395,68 @@ function WallPanels({ wallId, wallPatternId }) {
 
 // ─── Base (shower / tub) ──────────────────────────────────────────────────────
 
-const WHITE_ACRYLIC = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.15, metalness: 0 })
+const BASE_COLOR_HEX = {
+  'white':   '#f8f8f6',
+  'almond':  '#d6c8a8',
+  'biscuit': '#cebf9e',
+  'gray':    '#9a9a9c',
+  'sandbar': '#c2b290',
+}
 
-function BaseModel({ selection }) {
+const VALID_BASE_COLORS = new Set([
+  'white', 'almond', 'biscuit', 'linen', 'gray', 'sandbar',
+  'arctic-ice', 'canyon-rock', 'carbon-ash', 'evo', 'glacier-ice',
+  'metapeake', 'napoli-marble', 'sandalwood', 'santa-cruz',
+  'santorini-white', 'sierra-sand', 'tuscany', 'versailles', 'white-travertine',
+])
+
+function BaseModel({ selection, baseColor, wallId }) {
   const { scene: shower } = useGLTF('/models/SHOWER-STANDARD.glb')
   const { scene: tub }    = useGLTF('/models/TUB-CLASSIC.glb')
+  const { gl }            = useThree()
 
   useEffect(() => {
-    ;[shower, tub].forEach(scene => {
-      scene.traverse(child => {
-        if (child.isMesh) child.material = WHITE_ACRYLIC
-      })
+    const isSolid = baseColor !== 'match-walls'
+    const effectiveId = isSolid ? baseColor : (VALID_BASE_COLORS.has(wallId) ? wallId : 'white')
+    const mat = new THREE.MeshStandardMaterial({ roughness: isSolid ? 0.15 : 0.48, metalness: 0 })
+    let cancelled = false
+
+    const applyMat = () => {
+      shower.traverse(child => { if (child.isMesh) child.material = mat })
+    }
+
+    if (isSolid) {
+      mat.color.set(BASE_COLOR_HEX[effectiveId] ?? '#f8f8f6')
+      applyMat()
+    } else {
+      const wallOpt = manifest.categories.walls?.options.find(o => o.id === effectiveId)
+      mat.color.set(WALL_HEX[effectiveId] ?? '#f8f8f6')
+      applyMat()
+
+      if (wallOpt?.basisTexture) {
+        loadBasisTexture(wallOpt.basisTexture, gl).then(tex => {
+          if (cancelled) return
+          tex.colorSpace = THREE.SRGBColorSpace
+          tex.wrapS = tex.wrapT = THREE.RepeatWrapping
+          tex.repeat.set(wallOpt.solid ? 1 : 1.5, wallOpt.solid ? 1 : 1.5)
+          tex.anisotropy = gl.capabilities.getMaxAnisotropy()
+          tex.needsUpdate = true
+          mat.map = tex
+          mat.color.set('#ffffff')
+          mat.needsUpdate = true
+          applyMat()
+        }).catch(() => {})
+      }
+    }
+
+    const tubMat = new THREE.MeshStandardMaterial({
+      color: BASE_COLOR_HEX[isSolid ? effectiveId : 'white'] ?? '#f8f8f6',
+      roughness: 0.15, metalness: 0,
     })
-  }, [shower, tub])
+    tub.traverse(child => { if (child.isMesh) child.material = tubMat })
+
+    return () => { cancelled = true }
+  }, [shower, tub, gl, baseColor, wallId])
 
   return (
     <>
@@ -600,6 +652,7 @@ const NUDGE_GROUPS = [
   { key: 'gbv',     label: 'GB Back'    },
   { key: 'gbd',     label: 'GB Entry'   },
   { key: 'stddoor', label: 'Std Door'   },
+  { key: 'tubpull', label: 'Tub Pull'   },
   { key: 'drain',   label: 'Drain'      },
   { key: 'mirror',  label: 'Mirror'     },
 ]
@@ -685,8 +738,9 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
     headTub:   add3(TUB_HEAD_POS,      nudges.head),
     gbv:       add3(GRAB_BAR_VERT_POS, nudges.gbv),
     gbd:       add3(GRAB_BAR_DIAG_POS, nudges.gbd),
-    stddoor:   add3(STD_DOOR_POS,      nudges.stddoor),
-    stdglass:  add3(STD_GLASS_POS,     nudges.stddoor),
+    stddoor:   add3(selections.base === 'tub' ? TUB_DOOR_POS : STD_DOOR_POS,  nudges.stddoor),
+    stdglass:  add3(selections.base === 'tub' ? TUB_DOOR_POS : STD_GLASS_POS, nudges.stddoor),
+    tubpull:   add3(TUB_PULL_POS, nudges.tubpull),
     drain:     add3(DRAIN_POS,         nudges.drain),
     mirror:    add3(MIRROR_POS,        nudges.mirror),
   }
@@ -714,14 +768,22 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
       </group>
 
       <group position={positions.stddoor} rotation={[0, Math.PI / 2, 0]}>
-        <TrimColoredModel url="/models/SHOWER-DOOR-STD.glb" trimId={selections.trim}
-                          visible={selections.enclosure === 'clear-glass-door' || selections.enclosure === 'rain-glass-door'} />
+        <TrimColoredModel
+          url={selections.base === 'tub' ? '/models/TB-GE-ENCLOSURE.glb' : '/models/SHOWER-DOOR-STD.glb'}
+          trimId={selections.trim}
+          visible={selections.enclosure === 'clear-glass-door' || selections.enclosure === 'rain-glass-door'} />
       </group>
 
       <group position={positions.stdglass} rotation={[0, Math.PI / 2, 0]}>
-        <GlassModel url="/models/SH-STD-GLASS.glb"
-                    rain={selections.enclosure === 'rain-glass-door'}
-                    visible={selections.enclosure === 'clear-glass-door' || selections.enclosure === 'rain-glass-door'} />
+        <GlassModel
+          url={selections.base === 'tub' ? '/models/TB-STD-GLASS.glb' : '/models/SH-STD-GLASS.glb'}
+          rain={selections.enclosure === 'rain-glass-door'}
+          visible={selections.enclosure === 'clear-glass-door' || selections.enclosure === 'rain-glass-door'} />
+      </group>
+
+      <group position={positions.tubpull} rotation={[0, Math.PI / 2, 0]}>
+        <TrimColoredModel url="/models/SD-Horizontal_Ladder_Pulls.glb" trimId={selections.trim}
+                          visible={selections.base === 'tub' && (selections.enclosure === 'clear-glass-door' || selections.enclosure === 'rain-glass-door')} />
       </group>
 
       <group position={positions.seat} rotation={[0, Math.PI / 2, 0]}>
@@ -776,7 +838,7 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
       </group>
 
       <group position={positions.base} rotation={[0, Math.PI / 2, 0]}>
-        <BaseModel selection={selections.base} />
+        <BaseModel selection={selections.base} baseColor={selections.baseColor} wallId={selections.walls ?? selections.wallColor} />
       </group>
       <group position={positions.drain} rotation={[0, Math.PI / 2, 0]}>
         <TrimColoredModel url="/models/SHOWER-DRAIN.glb" trimId={selections.trim}
@@ -818,7 +880,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
   const [showNudge, setShowNudge] = useState(false)
   const [nudges, setNudges] = useState({
     base:[0,0,0], valve:[0,0,0], acc:[0,0,0], seat:[0,0,0],
-    head:[0,0,0], gbv:[0,0,0], gbd:[0,0,0], stddoor:[0,0,0], drain:[0,0,0], mirror:[0,0,0],
+    head:[0,0,0], gbv:[0,0,0], gbd:[0,0,0], stddoor:[0,0,0], tubpull:[0,0,0], drain:[0,0,0], mirror:[0,0,0],
   })
   const eulerToQuat = (e) => {
     const q = new THREE.Quaternion().setFromEuler(new THREE.Euler(...e))
@@ -926,8 +988,9 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls }
     head:    add3(STANDARD_HEAD_POS, nudges.head),
     gbv:     add3(GRAB_BAR_VERT_POS, nudges.gbv),
     gbd:     add3(GRAB_BAR_DIAG_POS, nudges.gbd),
-    stddoor: add3(STD_DOOR_POS,      nudges.stddoor),
-    stdglass: add3(STD_GLASS_POS,    nudges.stddoor),
+    stddoor: add3(selections.base === 'tub' ? TUB_DOOR_POS : STD_DOOR_POS,  nudges.stddoor),
+    stdglass: add3(selections.base === 'tub' ? TUB_DOOR_POS : STD_GLASS_POS, nudges.stddoor),
+    tubpull: add3(TUB_PULL_POS, nudges.tubpull),
     drain:   add3(DRAIN_POS,         nudges.drain),
     mirror:  add3(MIRROR_POS,        nudges.mirror),
   }

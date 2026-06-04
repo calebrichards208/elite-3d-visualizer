@@ -15,7 +15,10 @@ export function useSelections() {
 
   const update = useCallback((key, value) => {
     setSelections(prev => {
-      const next = { ...prev, [key]: value }
+      let next = { ...prev, [key]: value }
+      if (key === 'base' && value === 'tub' && ['bench', 'corner', 'fold-down'].includes(prev.seat)) {
+        next = { ...next, seat: 'none' }
+      }
       localStorage.setItem(LS_KEY, JSON.stringify(next))
       return next
     })

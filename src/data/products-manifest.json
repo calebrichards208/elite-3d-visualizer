@@ -4,7 +4,7 @@
     "panels": { "center": "SHOWER-SURROUND-CENTER-ELITE.glb", "sides": "SHOWER-SURROUND-SIDES-ELITE.glb" }
   },
   "defaults": {
-    "base": "shower", "walls": "white", "wallPattern": "none", "trim": "chrome",
+    "base": "shower", "baseColor": "white", "walls": "white", "wallPattern": "none", "trim": "chrome",
     "enclosure": "curtain-rod", "seat": "none", "shelf": "none",
     "grabBar": "none", "showerHead": "standard"
   },
@@ -60,15 +60,24 @@
         { "id": "tub",    "label": "Tub Conversion", "thumbnail": "/textures/Classic.png",     "model": "/models/TUB-CLASSIC.glb" }
       ]
     },
+    "baseColor": {
+      "label": "Base Color",
+      "options": [
+        { "id": "white",       "label": "White",       "thumbnail": "/textures/White.png" },
+        { "id": "almond",      "label": "Almond",      "thumbnail": "/textures/Almond.png" },
+        { "id": "biscuit",     "label": "Biscuit",     "thumbnail": "/textures/Biscuit.png" },
+        { "id": "gray",        "label": "Gray",        "thumbnail": "/textures/Gray.png" },
+        { "id": "sandbar",     "label": "Sandbar",     "thumbnail": "/textures/Sandbar.png" },
+        { "id": "match-walls", "label": "Match Walls", "thumbnail": "/textures/match-walls.svg" }
+      ]
+    },
     "trim": {
       "label": "Fixture Color",
       "options": [
         { "id": "chrome",            "label": "Chrome",            "thumbnail": "/textures/Chrome.png" },
         { "id": "brushed-nickel",    "label": "Brushed Nickel",    "thumbnail": "/textures/Brushed Nickel.png" },
         { "id": "matte-black",       "label": "Matte Black",       "thumbnail": "/textures/Matte Black.png" },
-        { "id": "brushed-gold",      "label": "Brushed Gold",      "thumbnail": "/textures/Brushed Gold.png" },
-        { "id": "oil-rubbed-bronze", "label": "Oil Rubbed Bronze", "thumbnail": "/textures/Oil Rubbed Bronze.png" },
-        { "id": "stainless",         "label": "Stainless",         "thumbnail": "/textures/Stainless.png" }
+        { "id": "oil-rubbed-bronze", "label": "Oil Rubbed Bronze", "thumbnail": "/textures/Oil Rubbed Bronze.png" }
       ]
     },
     "showerHead": {

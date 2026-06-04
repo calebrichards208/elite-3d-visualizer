@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="49" fill="#f0ede8"/>
+  <!-- Wall panel -->
+  <rect x="16" y="18" width="26" height="50" rx="3" fill="#d4c8b8" stroke="#b8ab98" stroke-width="1.5"/>
+  <!-- Floor panel -->
+  <rect x="16" y="72" width="26" height="12" rx="2" fill="#d4c8b8" stroke="#b8ab98" stroke-width="1.5"/>
+  <!-- Chain link left -->
+  <rect x="52" y="37" width="18" height="12" rx="6" fill="none" stroke="#8a7f72" stroke-width="4"/>
+  <!-- Chain link right -->
+  <rect x="62" y="51" width="18" height="12" rx="6" fill="none" stroke="#8a7f72" stroke-width="4"/>
+</svg>

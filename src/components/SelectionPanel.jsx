@@ -12,6 +12,7 @@ const SUB_TABS = [
   { key: 'walls',       label: 'Shower Walls', catKey: 'walls' },
   { key: 'wallPattern', label: 'Pattern',       catKey: 'wallPattern' },
   { key: 'base',        label: 'Base Type',     catKey: 'base' },
+  { key: 'baseColor',   label: 'Base Color',    catKey: 'baseColor' },
   { key: 'trim',       label: 'Fixture Color', catKey: 'trim' },
   { key: 'showerHead', label: 'Shower Head',   catKey: 'showerHead' },
   { key: 'enclosure',  label: 'Enclosure',     catKey: 'enclosure' },
@@ -221,11 +222,14 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
           }}>
             {options.map(opt => {
               const selected = currentVal === opt.id
+              const dimmed = (activeTab === 'seat' && selections.base === 'tub' && opt.id !== 'none')
+                          || (activeTab === 'baseColor' && selections.base === 'tub' && opt.id === 'match-walls')
               return (
                 <button
                   key={opt.id}
                   ref={selected ? selectedOptRef : null}
                   onClick={() => onUpdate(activeTab, opt.id)}
+                  disabled={dimmed}
                   style={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -235,9 +239,10 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
                     background: selected ? '#fdf8f0' : '#fafafa',
                     border: selected ? '2px solid #c9a25a' : '1.5px solid #eee',
                     borderRadius: 10,
-                    cursor: 'pointer',
-                    transition: 'border-color 0.12s, background 0.12s',
+                    cursor: dimmed ? 'not-allowed' : 'pointer',
+                    transition: 'border-color 0.12s, background 0.12s, opacity 0.12s',
                     textAlign: 'center',
+                    opacity: dimmed ? 0.4 : 1,
                   }}
                 >
                   {opt.thumbnail && (
