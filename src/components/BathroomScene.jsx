@@ -1,7 +1,7 @@
 import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { OrbitControls, useGLTF, Environment, ContactShadows, MeshReflectorMaterial } from '@react-three/drei'
 import { loadBasisTexture } from '../utils/loadBasisTexture.js'
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
 import manifest from '../data/products-manifest.json'
@@ -600,12 +600,19 @@ function FoldDownSeat({ visible }) {
 
 // ─── Camera ───────────────────────────────────────────────────────────────────
 
+const _camCtx = { camera: null, center: null }
+
 function CameraRig({ recenterKey, showerCenter, skipIntro, onPanelReady }) {
   const { camera }  = useThree()
   const controlsRef = useRef()
   const [animating, setAnimating] = useState(!skipIntro)
   const targetRef     = useRef(null)
   const panelFiredRef = useRef(false)
+
+  useEffect(() => {
+    _camCtx.camera = camera
+    _camCtx.center = showerCenter
+  })
 
   useEffect(() => {
     if (!controlsRef.current) return
@@ -912,9 +919,22 @@ function ScreenshotCapture({ glRef }) {
   return null
 }
 
-export default function BathroomScene({ selections, recenterKey, showRoomWalls, onPanelReady, glRef }) {
+export default function BathroomScene({ selections, recenterKey, showRoomWalls, onPanelReady, onExport, glRef }) {
   const [skipIntro] = useState(() => !!sessionStorage.getItem('elite-intro-played'))
   const [isLoaded, setIsLoaded] = useState(false)
+  const [exportHovered, setExportHovered] = useState(false)
+
+  const handleExport = useCallback(() => {
+    const { camera, center } = _camCtx
+    if (camera && center) {
+      const { x, y, z } = center
+      camera.position.set(x, y + 1.0, z + 4.0)
+    }
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const dataUrl = glRef?.current?.domElement.toDataURL('image/jpeg', 0.92)
+      if (dataUrl) onExport?.(dataUrl)
+    }))
+  }, [glRef, onExport])
   const [active, setActive] = useState(null)
   const [showNudge, setShowNudge] = useState(false)
   const [nudges, setNudges] = useState({
@@ -1053,6 +1073,28 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls, 
         }}
       >⚙</button>
       {showNudge && <NudgeOverlay active={active} setActive={setActive} positions={positions} rotations={gbRots} />}
+      <button
+        onClick={handleExport}
+        onMouseEnter={() => setExportHovered(true)}
+        onMouseLeave={() => setExportHovered(false)}
+        title="Export design"
+        style={{
+          position: 'fixed', top: 16, right: 16, zIndex: 101,
+          width: 28, height: 28, borderRadius: '50%', border: 'none',
+          background: exportHovered ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.08)',
+          color: exportHovered ? '#ffffff' : 'rgba(255,255,255,0.55)',
+          transform: exportHovered ? 'scale(1.12)' : 'scale(1)',
+          cursor: 'pointer', lineHeight: 1,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          transition: 'background 0.1s ease, color 0.1s ease, transform 0.1s ease',
+        }}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+      </button>
       <Canvas
         camera={{ position: [0, 1.5, 6], fov: 52, near: 0.05, far: 80 }}
         shadows

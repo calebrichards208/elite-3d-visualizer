@@ -191,12 +191,12 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
                   onClick={() => setActiveTab(tab.key)}
                   style={{
                     flexShrink: 0,
-                    padding: '6px 13px',
+                    padding: '7px 15px',
                     borderRadius: 20,
                     border: active ? '1.5px solid #111' : '1.5px solid #e0e0e0',
                     background: active ? '#111' : '#fff',
                     color: active ? '#fff' : '#555',
-                    fontSize: '12px',
+                    fontSize: '13px',
                     fontWeight: active ? 600 : 500,
                     cursor: 'pointer',
                     whiteSpace: 'nowrap',
@@ -244,7 +244,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
                     flexDirection: 'column',
                     alignItems: 'center',
                     gap: 6,
-                    padding: '8px 8px 10px',
+                    padding: '10px 8px 12px',
                     background: selected ? '#fdf8f0' : '#fafafa',
                     border: selected ? '2px solid #c9a25a' : '1.5px solid #eee',
                     borderRadius: 10,
@@ -268,7 +268,7 @@ export const SelectionPanel = memo(function SelectionPanel({ selections, onUpdat
                     />
                   )}
                   <span style={{
-                    fontSize: '11px',
+                    fontSize: '13px',
                     fontWeight: selected ? 600 : 500,
                     color: selected ? '#c9a25a' : '#444',
                     lineHeight: 1.3,

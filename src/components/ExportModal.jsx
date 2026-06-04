@@ -49,10 +49,59 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
     setTimeout(() => setCopied(null), 2000)
   }
 
-  const handleSaveImage = () => {
+  const handleSaveImage = async () => {
     if (!screenshotUrl) return
+
+    const img = new Image()
+    img.src = screenshotUrl
+    await new Promise(res => { img.onload = res })
+
+    const W = 800
+    const imgH = Math.round(W * img.height / img.width)
+    const PAD = 30
+    const ROW_H = 36
+    const HEADER_H = 58
+    const textH = HEADER_H + rows.length * ROW_H + PAD
+
+    const canvas = document.createElement('canvas')
+    canvas.width = W
+    canvas.height = imgH + textH
+    const ctx = canvas.getContext('2d')
+
+    ctx.drawImage(img, 0, 0, W, imgH)
+
+    ctx.fillStyle = '#c9a25a'
+    ctx.fillRect(0, imgH, W, 3)
+
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, imgH + 3, W, textH)
+
+    ctx.fillStyle = '#c9a25a'
+    ctx.font = '700 11px system-ui, sans-serif'
+    ctx.textAlign = 'left'
+    ctx.fillText('ELITE CONSTRUCTION + REMODELING', PAD, imgH + 3 + PAD + 12)
+
+    ctx.fillStyle = '#f0f0f0'
+    ctx.fillRect(PAD, imgH + 3 + HEADER_H - 10, W - PAD * 2, 1)
+
+    rows.forEach(({ label, value }, i) => {
+      const y = imgH + 3 + HEADER_H + i * ROW_H + ROW_H * 0.66
+      ctx.fillStyle = '#999'
+      ctx.font = '400 13px system-ui, sans-serif'
+      ctx.textAlign = 'left'
+      ctx.fillText(label, PAD, y)
+      ctx.fillStyle = '#111'
+      ctx.font = '500 13px system-ui, sans-serif'
+      ctx.textAlign = 'left'
+      ctx.fillText(value, 210, y)
+      if (i < rows.length - 1) {
+        ctx.fillStyle = '#f4f4f4'
+        ctx.fillRect(PAD, imgH + 3 + HEADER_H + (i + 1) * ROW_H - 4, W - PAD * 2, 1)
+      }
+    })
+
     const a = document.createElement('a')
-    a.href = screenshotUrl
+    a.href = canvas.toDataURL('image/jpeg', 0.92)
     a.download = `elite-bath-design-${Date.now()}.jpg`
     a.click()
   }
