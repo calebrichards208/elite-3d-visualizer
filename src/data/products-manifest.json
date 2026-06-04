@@ -6,7 +6,7 @@
   "defaults": {
     "base": "shower", "walls": "white", "wallPattern": "none", "trim": "chrome",
     "enclosure": "curtain-rod", "seat": "none", "shelf": "none",
-    "grabBar": "none", "showerHead": "rain-head"
+    "grabBar": "none", "showerHead": "standard"
   },
   "categories": {
     "walls": {
@@ -74,6 +74,7 @@
     "showerHead": {
       "label": "Shower Head",
       "options": [
+        { "id": "standard",  "label": "Standard",  "thumbnail": "/textures/Standard Shower Head.png" },
         { "id": "rain-head", "label": "Rain Head", "thumbnail": "/textures/Rain Shower.png" },
         { "id": "handheld",  "label": "Handheld",  "thumbnail": "/textures/Handheld.png" }
       ]

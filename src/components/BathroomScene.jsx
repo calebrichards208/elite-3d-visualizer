@@ -84,6 +84,7 @@ const PRELOAD_URLS = [
   '/models/SHOWER-STANDARD.glb',
   '/models/TUB-CLASSIC.glb',
   '/models/SHOWER-VALVE.glb',
+  '/models/LA-STANDARD-SHOWER-FIXTURE.glb',
   '/models/LA-RAIN-SHOWER-HEAD.glb',
   '/models/LA-HANDHELD_FIXTURE.glb',
   '/models/LA-TUB-SHOWER-FIXTURES.glb',
@@ -743,6 +744,11 @@ function SceneContent({ selections, recenterKey, nudges, gbRots, showRoomWalls }
 
       <group position={positions.valve} rotation={[0, Math.PI / 2, 0]}>
         <TrimModels trimId={selections.trim} />
+      </group>
+
+      <group position={positions.head} rotation={[0, Math.PI / 2, 0]}>
+        <TrimColoredModel url="/models/LA-STANDARD-SHOWER-FIXTURE.glb" trimId={selections.trim}
+                          visible={selections.base !== 'tub' && selections.showerHead === 'standard'} />
       </group>
 
       <group position={positions.headRain} rotation={[0, Math.PI / 2, 0]}>
