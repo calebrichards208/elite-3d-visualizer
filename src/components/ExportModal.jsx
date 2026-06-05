@@ -58,8 +58,8 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
     await new Promise(res => { img.onload = res })
 
     const W = 800
-    const rawImgH = Math.round(W * img.height / img.width)
-    const imgH = Math.min(rawImgH, Math.round(W * 0.65)) // cap height so text section stays readable
+    const naturalH = Math.round(W * img.height / img.width)
+    const imgH = Math.min(naturalH, Math.round(W * 0.65)) // cap height so text section stays readable
     const PAD = 36
     const ROW_H = 42
     const HEADER_H = 68
@@ -70,7 +70,10 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
     canvas.height = imgH + textH
     const ctx = canvas.getContext('2d')
 
-    ctx.drawImage(img, 0, 0, W, imgH)
+    // Cover-crop: show center of source so proportions are never distorted
+    const srcH = Math.round(img.height * imgH / naturalH)
+    const srcY = Math.round((img.height - srcH) / 2)
+    ctx.drawImage(img, 0, srcY, img.width, srcH, 0, 0, W, imgH)
 
     ctx.fillStyle = '#c9a25a'
     ctx.fillRect(0, imgH, W, 3)
