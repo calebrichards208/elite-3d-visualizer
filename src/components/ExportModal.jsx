@@ -59,7 +59,7 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
 
     const W = 800
     const naturalH = Math.round(W * img.height / img.width)
-    const imgH = Math.min(naturalH, Math.round(W * 0.65)) // cap height so text section stays readable
+    const imgH = Math.min(naturalH, Math.round(W * 0.80)) // cap to keep text readable
     const PAD = 36
     const ROW_H = 42
     const HEADER_H = 68
@@ -69,6 +69,10 @@ export function ExportModal({ selections, screenshotUrl, onClose }) {
     canvas.width = W
     canvas.height = imgH + textH
     const ctx = canvas.getContext('2d')
+
+    // White fill first — transparent WebGL pixels become black in JPEG without this
+    ctx.fillStyle = '#f8f8f8'
+    ctx.fillRect(0, 0, W, imgH)
 
     // Cover-crop: show center of source so proportions are never distorted
     const srcH = Math.round(img.height * imgH / naturalH)
