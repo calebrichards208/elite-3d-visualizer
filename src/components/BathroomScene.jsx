@@ -618,7 +618,7 @@ function CameraRig({ recenterKey, showerCenter, skipIntro, onPanelReady }) {
     if (!controlsRef.current) return
     const { x, y, z } = showerCenter
     const mobile = window.innerWidth <= 768
-    const tx = x, ty = y + (mobile ? 0.7 : 1.0), tz = z + (mobile ? 4.4 : 3.0)
+    const tx = x, ty = y + (mobile ? 0.7 : 1.0), tz = z + (mobile ? 4.8 : 3.0)
     targetRef.current = new THREE.Vector3(tx, ty, tz)
     controlsRef.current.target.set(x, y + (mobile ? 0.0 : 0.3), z)
     if (skipIntro) {
