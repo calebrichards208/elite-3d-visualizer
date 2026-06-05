@@ -4,7 +4,7 @@
     "panels": { "center": "SHOWER-SURROUND-CENTER-ELITE.glb", "sides": "SHOWER-SURROUND-SIDES-ELITE.glb" }
   },
   "defaults": {
-    "base": "shower", "baseColor": "white", "walls": "white", "wallPattern": "none", "trim": "chrome",
+    "base": "shower", "baseColor": "match-walls", "walls": "santorini-white", "wallPattern": "none", "trim": "matte-black",
     "enclosure": "curtain-rod", "seat": "none", "shelf": "none",
     "grabBar": "none", "showerHead": "standard"
   },
@@ -19,21 +19,21 @@
         { "id": "linen",           "label": "Linen",           "thumbnail": "/textures/Linen.png",              "basisTexture": "/textures/basis/Linen.basis" },
         { "id": "gray",            "label": "Gray",            "thumbnail": "/textures/Gray.png" },
         { "id": "sandbar",         "label": "Sandbar",         "thumbnail": "/textures/Sandbar.png" },
-        { "id": "arctic-ice",      "label": "Arctic Ice",      "thumbnail": "/textures/walls/Arctic_Ice.jpg",   "basisTexture": "/textures/walls/Arctic_Ice.jpg" },
-        { "id": "canyon-rock",     "label": "Canyon Rock",     "thumbnail": "/textures/Madeira Granite.png",    "basisTexture": "/textures/basis/Madiera_Granite.basis" },
-        { "id": "carbon-ash",      "label": "Carbon Ash",      "thumbnail": "/textures/Gray.png",               "basisTexture": "/textures/basis/Classic_Concrete.basis" },
-        { "id": "evo",             "label": "Evo",             "thumbnail": "/textures/Evo_thumbnail.png",       "basisTexture": "/textures/basis/Evo.basis" },
-        { "id": "glacier-ice",     "label": "Glacier Ice",     "thumbnail": "/textures/walls/Glacier_Ice.jpg",  "basisTexture": "/textures/walls/Glacier_Ice.jpg" },
-        { "id": "horizon-beige",   "label": "Horizon Beige",   "thumbnail": "/textures/walls/HorizonBeige.jpg", "basisTexture": "/textures/walls/HorizonBeige.jpg" },
-        { "id": "metapeake",       "label": "Metapeake",       "thumbnail": "/textures/walls/Metapeake.jpg",    "basisTexture": "/textures/walls/Metapeake.jpg" },
-        { "id": "napoli-marble",   "label": "Napoli Marble",   "thumbnail": "/textures/Pompeii Marble.png",     "basisTexture": "/textures/basis/Pompeii_Marble.basis" },
-        { "id": "sandalwood",      "label": "Sandalwood",      "thumbnail": "/textures/Sandalwood_thumb.png",   "basisTexture": "/textures/basis/Sandalwood2.basis" },
-        { "id": "santa-cruz",      "label": "Santa Cruz",      "thumbnail": "/textures/River Rock.png",         "basisTexture": "/textures/basis/River_Rock.basis" },
         { "id": "santorini-white", "label": "Santorini White", "thumbnail": "/textures/Calcutta Marble.png",    "basisTexture": "/textures/basis/Calcutta.basis" },
-        { "id": "sierra-sand",     "label": "Sierra Sand",     "thumbnail": "/textures/Brecchia.png",           "basisTexture": "/textures/basis/Brecchia.basis" },
         { "id": "tuscany",         "label": "Tuscany",         "thumbnail": "/textures/walls/Tuscany.jpg",      "basisTexture": "/textures/walls/Tuscany.jpg" },
         { "id": "versailles",      "label": "Versailles",      "thumbnail": "/textures/walls/Versailles.jpg",   "basisTexture": "/textures/walls/Versailles.jpg" },
-        { "id": "white-travertine","label": "White Travertine","thumbnail": "/textures/Travertine.png",         "basisTexture": "/textures/basis/Travertine_Bianco.basis" }
+        { "id": "sierra-sand",     "label": "Sierra Sand",     "thumbnail": "/textures/Brecchia.png",           "basisTexture": "/textures/basis/Brecchia.basis" },
+        { "id": "white-travertine","label": "White Travertine","thumbnail": "/textures/Travertine.png",         "basisTexture": "/textures/basis/Travertine_Bianco.basis" },
+        { "id": "napoli-marble",   "label": "Napoli Marble",   "thumbnail": "/textures/Pompeii Marble.png",     "basisTexture": "/textures/basis/Pompeii_Marble.basis" },
+        { "id": "glacier-ice",     "label": "Glacier Ice",     "thumbnail": "/textures/walls/Glacier_Ice.jpg",  "basisTexture": "/textures/walls/Glacier_Ice.jpg" },
+        { "id": "carbon-ash",      "label": "Carbon Ash",      "thumbnail": "/textures/Gray.png",               "basisTexture": "/textures/basis/Classic_Concrete.basis" },
+        { "id": "arctic-ice",      "label": "Arctic Ice",      "thumbnail": "/textures/walls/Arctic_Ice.jpg",   "basisTexture": "/textures/walls/Arctic_Ice.jpg" },
+        { "id": "canyon-rock",     "label": "Canyon Rock",     "thumbnail": "/textures/Madeira Granite.png",    "basisTexture": "/textures/basis/Madiera_Granite.basis" },
+        { "id": "evo",             "label": "Evo",             "thumbnail": "/textures/Evo_thumbnail.png",       "basisTexture": "/textures/basis/Evo.basis" },
+        { "id": "horizon-beige",   "label": "Horizon Beige",   "thumbnail": "/textures/walls/HorizonBeige.jpg", "basisTexture": "/textures/walls/HorizonBeige.jpg" },
+        { "id": "metapeake",       "label": "Metapeake",       "thumbnail": "/textures/walls/Metapeake.jpg",    "basisTexture": "/textures/walls/Metapeake.jpg" },
+        { "id": "sandalwood",      "label": "Sandalwood",      "thumbnail": "/textures/Sandalwood_thumb.png",   "basisTexture": "/textures/basis/Sandalwood2.basis" },
+        { "id": "santa-cruz",      "label": "Santa Cruz",      "thumbnail": "/textures/River Rock.png",         "basisTexture": "/textures/basis/River_Rock.basis" }
       ]
     },
     "wallPattern": {
