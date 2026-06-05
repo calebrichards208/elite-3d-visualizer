@@ -929,7 +929,7 @@ export default function BathroomScene({ selections, recenterKey, showRoomWalls, 
     if (camera && center) {
       const { x, y, z } = center
       const mobile = window.innerWidth <= 768
-      camera.position.set(x, y + 1.0, z + (mobile ? 5.0 : 4.0))
+      camera.position.set(x, y + 1.0, z + (mobile ? 6.25 : 4.0))
     }
     requestAnimationFrame(() => requestAnimationFrame(() => {
       const dataUrl = glRef?.current?.domElement.toDataURL('image/jpeg', 0.92)
